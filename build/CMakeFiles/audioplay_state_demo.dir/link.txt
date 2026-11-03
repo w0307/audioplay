@@ -1,0 +1,1 @@
+/usr/bin/c++  -O3 -DNDEBUG   CMakeFiles/audioplay_state_demo.dir/examples/state_demo.cpp.o  -o bin/audioplay_state_demo  -Wl,-rpath,/home/xf/audioplay_state_v3_6/build:/home/xf/audioplay_state_v3_6/build/engine: libaudioplay.so.3.6.0 -lpthread -Wl,-rpath-link,/home/xf/audioplay_state_v3_6/build/engine 

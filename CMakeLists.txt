@@ -1,0 +1,58 @@
+cmake_minimum_required(VERSION 3.10)
+project(AudioPlay VERSION 3.6.0 LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+include(GNUInstallDirs)
+find_package(Threads REQUIRED)
+option(AUDIOPLAY_BUILD_DEMO "Build the state-driven audible demo" ON)
+option(AUDIOPLAY_BUILD_TESTS "Build policy, config, scheduler and WAV/MP3 tests" OFF)
+option(AUDIOPLAY_BUILD_BACKEND_TESTS "Test real Ekho with a simulated audio output" OFF)
+option(AUDIOPLAY_TEST_ONLY "Build tests without Ekho or PulseAudio" OFF)
+set(EKHO_SOURCE_DIR "" CACHE PATH "Patched Ekho v8.9 source directory")
+set(EKHO_BUILD_DIR "${EKHO_SOURCE_DIR}" CACHE PATH "Ekho config.h and libekho.a directory")
+set(AUDIOPLAY_CORE src/AudioPlay.cpp src/Config.cpp src/StateParser.cpp src/AnnouncementTable.cpp src/VoicePolicy.cpp src/PlaybackScheduler.cpp)
+
+if(NOT AUDIOPLAY_TEST_ONLY)
+    add_subdirectory(engine)
+    add_library(audioplay SHARED ${AUDIOPLAY_CORE})
+    add_library(AudioPlay::audioplay ALIAS audioplay)
+    target_compile_features(audioplay PUBLIC cxx_std_11)
+    set_target_properties(audioplay PROPERTIES CXX_EXTENSIONS OFF VERSION ${PROJECT_VERSION} SOVERSION 3 INSTALL_RPATH "$ORIGIN")
+    target_include_directories(audioplay PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+        PRIVATE src third_party)
+    target_link_libraries(audioplay PRIVATE AudioEngine::audio_engine Threads::Threads)
+    target_compile_options(audioplay PRIVATE -Wall -Wextra -Wpedantic)
+    if(UNIX AND NOT APPLE)
+        set_property(TARGET audioplay APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--no-undefined")
+    endif()
+    if(AUDIOPLAY_BUILD_DEMO)
+        add_executable(audioplay_state_demo examples/state_demo.cpp)
+        target_link_libraries(audioplay_state_demo PRIVATE AudioPlay::audioplay Threads::Threads)
+        set_target_properties(audioplay_state_demo PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin" INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}")
+        add_custom_target(audioplay_demo_resources ALL
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/bin/config"
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${CMAKE_CURRENT_SOURCE_DIR}/config/audioplay.json"
+                "${CMAKE_CURRENT_SOURCE_DIR}/config/audio_manifest.json"
+                "${CMAKE_CURRENT_BINARY_DIR}/bin/config"
+            COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/audio" "${CMAKE_CURRENT_BINARY_DIR}/bin/audio")
+        add_dependencies(audioplay_state_demo audioplay_demo_resources)
+        install(TARGETS audioplay_state_demo RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+        install(FILES config/audioplay.json config/audio_manifest.json DESTINATION ${CMAKE_INSTALL_BINDIR}/config)
+        install(DIRECTORY audio/ DESTINATION ${CMAKE_INSTALL_BINDIR}/audio)
+    endif()
+    install(TARGETS audioplay EXPORT AudioPlayTargets LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    install(FILES include/AudioPlay.h include/AudioState.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    install(EXPORT AudioPlayTargets NAMESPACE AudioPlay:: DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/AudioPlay)
+    include(CMakePackageConfigHelpers)
+    configure_package_config_file(cmake/AudioPlayConfig.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/AudioPlayConfig.cmake" INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/AudioPlay)
+    write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/AudioPlayConfigVersion.cmake" VERSION ${PROJECT_VERSION} COMPATIBILITY SameMajorVersion)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/AudioPlayConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/AudioPlayConfigVersion.cmake" DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/AudioPlay)
+endif()
+if(AUDIOPLAY_BUILD_TESTS OR AUDIOPLAY_TEST_ONLY OR AUDIOPLAY_BUILD_BACKEND_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/AudioPlay.h
+memory
+-
+AudioState.h
+../include/AudioState.h
+
+../include/AudioState.h
+limits
+-
+string
+-
+vector
+-
+
+/home/xf/audioplay_state_v3_6/examples/state_demo.cpp
+AudioPlay.h
+/home/xf/audioplay_state_v3_6/examples/AudioPlay.h
+chrono
+-
+csignal
+-
+iostream
+-
+thread
+-
+

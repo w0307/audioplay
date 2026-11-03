@@ -1,0 +1,226 @@
+{
+  "audio": {
+    "enabled": true,
+    "volume": 0.8,
+    "voice": "Mandarin",
+    "speed": 0
+  },
+  "policy": {
+    "repeat_interval_ms": 1000,
+    "mode_prompt_enabled": true,
+    "obstacle_limit_ms": 30000,
+    "retry_interval_ms": 1000,
+    "low_battery_trigger_percent": 20.0,
+    "low_battery_recover_percent": 25.0,
+    "low_battery_confirm_ms": 3000,
+    "input_timeout_ms": 3000,
+    "linear_enter_m_s": 0.02,
+    "linear_exit_m_s": 0.01,
+    "angular_enter_rad_s": 0.1,
+    "angular_exit_rad_s": 0.07
+  },
+  "voices": {
+    "emergency_stop": {
+      "file": "../audio/043.mp3",
+      "text": "急停已触发，请检查并复位。"
+    },
+    "charging": {
+      "file": "../audio/017.mp3",
+      "text": "车辆正在充电。"
+    },
+    "obstacle": {
+      "file": "../audio/005.mp3",
+      "text": "前方有障碍物，请注意避让。"
+    },
+    "low_battery": {
+      "file": "../audio/002.mp3",
+      "text": "电量低，请及时充电。"
+    },
+    "manual_mode": {
+      "file": "../audio/003.mp3",
+      "text": "手动模式已开启。"
+    },
+    "automatic_mode": {
+      "file": "../audio/004.mp3",
+      "text": "自动模式已开启。"
+    },
+    "running": {
+      "file": "../audio/001.mp3",
+      "text": "车辆正在运行，请注意安全。"
+    },
+    "turn_left": {
+      "file": "../audio/006.mp3",
+      "text": "车辆左转，请注意安全。"
+    },
+    "turn_right": {
+      "file": "../audio/007.mp3",
+      "text": "车辆右转，请注意安全。"
+    },
+    "rotating": {
+      "file": "../audio/008.mp3",
+      "text": "车辆正在旋转，请注意安全。"
+    },
+    "sideways": {
+      "file": "../audio/009.mp3",
+      "text": "车辆横移中，请注意安全。"
+    },
+    "fault": {
+      "file": ""
+    },
+    "fault:common/1": {
+      "file": "../audio/044.mp3",
+      "text": "触碰保护已触发，请检查。"
+    },
+    "fault:common/2": {
+      "file": "../audio/050.mp3",
+      "text": "工控机故障，请检查。"
+    },
+    "fault:common/3": {
+      "file": "../audio/041.mp3",
+      "text": "举升限位异常，请检查。"
+    },
+    "fault:common/4": {
+      "file": "../audio/041.mp3",
+      "text": "料车连接异常，请检查。"
+    },
+    "fault:common/5": {
+      "file": "../audio/100.mp3",
+      "text": "工控机参数匹配异常，请检查。"
+    },
+    "fault:common/6": {
+      "file": "",
+      "text": "舵轮差速转向超时，请检查。"
+    },
+    "fault:warning/0": {
+      "file": "../audio/101.mp3",
+      "text": "导航通信端口掉线，请检查。"
+    },
+    "fault:warning/1": {
+      "file": "../audio/102.mp3",
+      "text": "上装通信端口掉线，请检查。"
+    },
+    "fault:network/ping_timeout": {
+      "file": "../audio/042.mp3",
+      "text": "网络连接超时，请检查。"
+    },
+    "fault:task/rcs": {
+      "file": "",
+      "text": "调度任务异常，请检查任务状态。"
+    },
+    "fault:ipc/ERROR_QR_LOC_NOT_INIT": {
+      "file": "../audio/103.mp3",
+      "text": "二维码定位尚未初始化，请检查。"
+    },
+    "fault:ipc/ERROR_QR_LOC_INITING": {
+      "file": "../audio/104.mp3",
+      "text": "二维码定位正在初始化，请稍候。"
+    },
+    "fault:ipc/ERROR_QR_LOC_INITED": {
+      "file": "../audio/055.mp3",
+      "text": "定位状态异常，请检查。"
+    },
+    "fault:ipc/ERROR_QR_LOC_ODOM_ERROR": {
+      "file": "../audio/106.mp3",
+      "text": "定位里程计异常，请检查。"
+    },
+    "fault:ipc/ERROR_QR_LOC_QRCODE_LOST": {
+      "file": "",
+      "text": "二维码丢失，请检查定位。"
+    },
+    "fault:ipc/ERROR_QR_LOC_ODOM_NO_DATA": {
+      "file": "../audio/108.mp3",
+      "text": "里程计数据缺失，请检查。"
+    },
+    "fault:ipc/ERROR_NAVI_DERAILMENT": {
+      "file": "../audio/109.mp3",
+      "text": "车辆偏离导航路径，请检查。"
+    },
+    "fault:ipc/ERROR_NAVI_OVER_POINT": {
+      "file": "",
+      "text": "车辆超过目标点，请检查。"
+    },
+    "fault:ipc/ERROR_QR_LOC_NO_DATA": {
+      "file": "../audio/111.mp3",
+      "text": "二维码定位数据缺失，请检查。"
+    },
+    "fault:ipc/ERROR_RCS_EXIST_ERROR": {
+      "file": "",
+      "text": "调度系统异常，请检查。"
+    },
+    "fault:ipc/ERROR_QR_LOC_ODOM_WHEEL_PULSE_NOT_UPDATE": {
+      "file": "../audio/113.mp3",
+      "text": "编码器脉冲未更新，请检查。"
+    },
+    "fault:ipc/ERROR_QR_LOC_CANNOT_READ_MORE": {
+      "file": "",
+      "text": "二维码连续读取异常，请检查。"
+    },
+    "fault:ipc/ERROR_QR_LOC_ROT_LOSS_CODE": {
+      "file": "",
+      "text": "旋转过程中二维码丢失，请检查。"
+    },
+    "fault:ipc/ERROR_NOT_FIND_QR": {
+      "file": "",
+      "text": "未找到二维码，请检查。"
+    },
+    "fault:ipc/ERROR_NAVI_WHEEL_SLIP": {
+      "file": "",
+      "text": "车辆车轮打滑，请检查。"
+    },
+    "fault:ipc/ERROR_NAVI_ARRIVE_NOT_FINISH": {
+      "file": "",
+      "text": "车辆到点任务未完成，请检查。"
+    },
+    "fault:device/1/*": {
+      "file": "../audio/061.mp3"
+    },
+    "fault:device/2/*": {
+      "file": "../audio/062.mp3"
+    },
+    "fault:device/3/*": {
+      "file": "../audio/063.mp3"
+    },
+    "fault:device/4/*": {
+      "file": "../audio/064.mp3"
+    },
+    "fault:device/5/*": {
+      "file": "../audio/065.mp3"
+    },
+    "fault:device/6/*": {
+      "file": ""
+    },
+    "fault:device/7/*": {
+      "file": "../audio/067.mp3"
+    },
+    "fault:device/8/*": {
+      "file": "../audio/068.mp3"
+    },
+    "fault:device/9/*": {
+      "file": "../audio/069.mp3"
+    },
+    "fault:device/10/*": {
+      "file": "../audio/070.mp3"
+    },
+    "fault:device/11/*": {
+      "file": "../audio/071.mp3"
+    },
+    "fault:device/12/*": {
+      "file": "../audio/072.mp3"
+    },
+    "fault:device/13/*": {
+      "file": "../audio/073.mp3"
+    },
+    "fault:device/14/*": {
+      "file": "../audio/074.mp3"
+    },
+    "fault:device/15/*": {
+      "file": ""
+    },
+    "fault:device/16/*": {
+      "file": ""
+    },
+    "fault:device/unknown": {
+      "file": "../audio/051.mp3"
+    }
+  }
+}

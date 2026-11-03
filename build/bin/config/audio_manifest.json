@@ -1,0 +1,1359 @@
+{
+  "schema_version": 1,
+  "source_archive": "版本1-男主女辅.zip",
+  "description": "音频台词标签依据原文件名整理，未逐句听写；duration_seconds为媒体时长，仅供查看，不参与播放结束判定。编号是素材编号，不等同State错误码。此文件为完整素材清单，运行时只读取audioplay.json。",
+  "counts": {
+    "active": 40,
+    "pending": 32,
+    "alternative": 2
+  },
+  "total_files": 74,
+  "recordings": [
+    {
+      "id": "001",
+      "original_path": "001/车辆运行中，请注意安全.mp3",
+      "size_bytes": 135441,
+      "duration_seconds": 45.072,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "cc4bdb3f077d281648d0d15bfcfa6ff62f53422e5b3c56f30a286625301f1efe",
+      "label_from_filename": "车辆运行中，请注意安全",
+      "file": "../audio/001.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "running"
+      ],
+      "state_triggers": [
+        "driving=true、未暂停、有平移速度，无转弯/横移优先条件"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "002",
+      "original_path": "002/电量不足，请及时充电.mp3",
+      "size_bytes": 153477,
+      "duration_seconds": 51.084,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "d15f60f8c01e1a19fb3ce8e867a8b7496a5fb393c5b5cc93c8404523621cf907",
+      "label_from_filename": "电量不足，请及时充电",
+      "file": "../audio/002.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "low_battery"
+      ],
+      "state_triggers": [
+        "batteryCharge≤20%持续3秒；≥25%解除"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "003",
+      "original_path": "003/手动模式已开启.mp3",
+      "size_bytes": 7437,
+      "duration_seconds": 1.8,
+      "codec": "mp3",
+      "sample_rate": 24000,
+      "channels": 1,
+      "sha256": "062cff0d44484a0897ecc6ff83d3f7afb8f1f25c52002fc8d1c55acb2a711db2",
+      "label_from_filename": "手动模式已开启",
+      "file": "../audio/003.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "manual_mode"
+      ],
+      "state_triggers": [
+        "operatingMode 变为 MANUAL（首次有效模式也提示一次）"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "004",
+      "original_path": "004/自动模式已开启.mp3",
+      "size_bytes": 6957,
+      "duration_seconds": 1.68,
+      "codec": "mp3",
+      "sample_rate": 24000,
+      "channels": 1,
+      "sha256": "4591c9be817ebc21f387bbe911a8649cf0f96f385106ca1e96a4a64ae73da920",
+      "label_from_filename": "自动模式已开启",
+      "file": "../audio/004.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "automatic_mode"
+      ],
+      "state_triggers": [
+        "operatingMode 变为 AUTOMATIC（首次有效模式也提示一次）"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "005",
+      "original_path": "005/前方检测到障碍物，请注意避让.mp3",
+      "size_bytes": 150453,
+      "duration_seconds": 50.076,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "fa2c3517719928376fad53a7dc0039fbbd8a239387d8be09ef9ee154675a1fc5",
+      "label_from_filename": "前方检测到障碍物，请注意避让",
+      "file": "../audio/005.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "obstacle"
+      ],
+      "state_triggers": [
+        "safetyState.fieldViolation=true；累计选中30秒后静音占位"
+      ],
+      "note": "录音50.076秒；默认障碍累计选中窗口30秒，可能在文件自然结束前取消。"
+    },
+    {
+      "id": "006",
+      "original_path": "006/车辆左转中，请注意安全.mp3",
+      "size_bytes": 162441,
+      "duration_seconds": 54.072,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "4e58e66242186a43229bb821bac72cc49c2b044c793904df598997c1c6292827",
+      "label_from_filename": "车辆左转中，请注意安全",
+      "file": "../audio/006.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "turn_left"
+      ],
+      "state_triggers": [
+        "driving=true、未暂停，平移且 omega≥转向进入门限"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "007",
+      "original_path": "007/车辆右转中，请注意安全.mp3",
+      "size_bytes": 162441,
+      "duration_seconds": 54.072,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "3e094b340d92b44981f1c98c44ae8e234384e041e2cfcf6f9e0ca2a01e12528b",
+      "label_from_filename": "车辆右转中，请注意安全",
+      "file": "../audio/007.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "turn_right"
+      ],
+      "state_triggers": [
+        "driving=true、未暂停，平移且 omega≤负转向进入门限"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "008",
+      "original_path": "008/车辆旋转中，请注意安全.mp3",
+      "size_bytes": 162441,
+      "duration_seconds": 54.072,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "8752a6f7d0f83f4ec33358a796b5b7284a444a6c821ad5451817e081c71f4578",
+      "label_from_filename": "车辆旋转中，请注意安全",
+      "file": "../audio/008.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "rotating"
+      ],
+      "state_triggers": [
+        "driving=true、未暂停，无平移且有转向速度"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "009",
+      "original_path": "009/车辆横移中，请注意安全.mp3",
+      "size_bytes": 162441,
+      "duration_seconds": 54.072,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "ed5db081f6076416ce8fd561c6fbf00894cae0bd44eba214e68e6050247e3c96",
+      "label_from_filename": "车辆横移中，请注意安全",
+      "file": "../audio/009.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "sideways"
+      ],
+      "state_triggers": [
+        "driving=true、未暂停、无转向；abs(vy)≥0.02且abs(vx)≤0.01进入横移"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "010",
+      "original_path": "010/避障检测关闭中，请注意避让.mp3",
+      "size_bytes": 144513,
+      "duration_seconds": 48.096,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "c1840c02f09b1278058011915ac9ffdd63a9247bd26fcf74df71561055124e09",
+      "label_from_filename": "避障检测关闭中，请注意避让",
+      "file": "../audio/010.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "现有 AudioState 没有避障检测关闭标志；fieldViolation 仅表示障碍触发，不能替代关闭标志。"
+    },
+    {
+      "id": "011",
+      "original_path": "011/驱动提升动作中，请注意安全.mp3",
+      "size_bytes": 147537,
+      "duration_seconds": 49.104,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "c0480d57187b11a17417998dda3e78ea1e0893b1fc4b7daf1e881a06927d7156",
+      "label_from_filename": "驱动提升动作中，请注意安全",
+      "file": "../audio/011.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "缺少驱动提升执行中信号；不能从通用 driving 或 DEVICE_ERROR 推断动作。"
+    },
+    {
+      "id": "012",
+      "original_path": "012/举升动作中，请注意安全.mp3",
+      "size_bytes": 135441,
+      "duration_seconds": 45.072,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "fb4967da5bc1181915f64052db81969af2682976b9ff339c259b253744e1fc77",
+      "label_from_filename": "举升动作中，请注意安全",
+      "file": "../audio/012.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "缺少可靠的举升执行中信号；liftStatus/设备故障不能直接推断动作过程。"
+    },
+    {
+      "id": "013",
+      "original_path": "013/牵引棒动作中，请注意安全.mp3",
+      "size_bytes": 141489,
+      "duration_seconds": 47.088,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "4729486939a42c93b3773c8c276c8e55afdbd696fd0406a795c0a1a9dae74282",
+      "label_from_filename": "牵引棒动作中，请注意安全",
+      "file": "../audio/013.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "缺少牵引棒执行中信号及机构识别。"
+    },
+    {
+      "id": "014",
+      "original_path": "014/辊道运转中，请注意安全.mp3",
+      "size_bytes": 162441,
+      "duration_seconds": 54.072,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "a2ab049c036b490ef50bd1c4aedbc13165f947dfd14fb24323c7bbba8e01311d",
+      "label_from_filename": "辊道运转中，请注意安全",
+      "file": "../audio/014.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "缺少辊道执行中信号及机构识别。"
+    },
+    {
+      "id": "015",
+      "original_path": "015/叉齿动作中，请注意安全[t=2s].mp3",
+      "size_bytes": 135441,
+      "duration_seconds": 45.072,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "3803ba1c0d96b84d49d1b86c4e36a740a78f27d966542211112d90109d8ec34a",
+      "label_from_filename": "叉齿动作中，请注意安全[t=2s]",
+      "file": "../audio/015.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "缺少叉齿执行中信号及机构识别；文件名中的[t=2s]仅保留为原始名称，不当作播放上限。"
+    },
+    {
+      "id": "016",
+      "original_path": "016/车辆充电已完成，请及时断开充电设备.mp3",
+      "size_bytes": 123453,
+      "duration_seconds": 41.076,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "cb6da992a4f4a633709916e7984265dfb365aee8c3b7947c4614596bec58d65a",
+      "label_from_filename": "车辆充电已完成，请及时断开充电设备",
+      "file": "../audio/016.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "charging 从 true 变 false 可能是停止/断开，不能直接认定充电完成。"
+    },
+    {
+      "id": "017",
+      "original_path": "017/车辆充电中.mp3",
+      "size_bytes": 153477,
+      "duration_seconds": 51.084,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "26239cf98608a0b3d1a94ae4106a0476ac48a71f45e9d15645a7d078fb9aaf09",
+      "label_from_filename": "车辆充电中",
+      "file": "../audio/017.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "charging"
+      ],
+      "state_triggers": [
+        "batteryState.charging=true"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "018",
+      "original_path": "018/开机初始化中，请稍候，待初始化完成后，方可操作.mp3",
+      "size_bytes": 186525,
+      "duration_seconds": 62.1,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "f1b4c08260e65102579e739d8f91f01345aa0558a9f53aaab3009092d3397fd3",
+      "label_from_filename": "开机初始化中，请稍候，待初始化完成后，方可操作",
+      "file": "../audio/018.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "缺少系统开机初始化状态，不能把播报模块启动等同车辆初始化。"
+    },
+    {
+      "id": "019",
+      "original_path": "019/初始化已完成，允许操作.mp3",
+      "size_bytes": 10701,
+      "duration_seconds": 2.616,
+      "codec": "mp3",
+      "sample_rate": 24000,
+      "channels": 1,
+      "sha256": "79054d90a31082ea53b61695bf4dcf581040dac8cc06f51fcfd223e0e4827f94",
+      "label_from_filename": "初始化已完成，允许操作",
+      "file": "../audio/019.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "缺少系统初始化完成事件，不能从模式有效或无故障推断允许操作。"
+    },
+    {
+      "id": "020",
+      "original_path": "020/AGV正在开启远程更新固件中，请勿操作.mp3",
+      "size_bytes": 162441,
+      "duration_seconds": 54.072,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "400a2c32adf64ee47f7a918e40ac15509ab2a4925820aa165155f5518ff1a42a",
+      "label_from_filename": "AGV正在开启远程更新固件中，请勿操作",
+      "file": "../audio/020.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "缺少远程固件更新状态。"
+    },
+    {
+      "id": "030",
+      "original_path": "030/30_AMR,未注册到,RCS.mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "6da4c0fc9d85cb97d810db27116c82223e06ecdd7ca8f2608f2b827b7200cf2a",
+      "label_from_filename": "AMR,未注册到,RCS",
+      "file": "../audio/030.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "现有 State/适配字段中没有明确的 AMR 注册 RCS 状态。"
+    },
+    {
+      "id": "031",
+      "original_path": "031/31_转盘，手动一键回零中,请注意安全.mp3",
+      "size_bytes": 27441,
+      "duration_seconds": 9.072,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "cf6d462deaf2bf05a599ed53ef4729caedfbcc439570b0ee1779b9b682fe5fa4",
+      "label_from_filename": "转盘，手动一键回零中,请注意安全",
+      "file": "../audio/031.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "缺少转盘手动一键回零的可靠动作标识。"
+    },
+    {
+      "id": "032",
+      "original_path": "032/自动模式已开启，要立刻运行请按启动按钮.mp3",
+      "size_bytes": 20109,
+      "duration_seconds": 4.968,
+      "codec": "mp3",
+      "sample_rate": 24000,
+      "channels": 1,
+      "sha256": "1da6d1db9fea4add659b732b3b51521012365488f74102680fcb2ed90dd3dcea",
+      "label_from_filename": "自动模式已开启，要立刻运行请按启动按钮",
+      "file": "../audio/032.mp3",
+      "binding_status": "alternative",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "自动模式替代录音；默认使用004，不推断“必须按启动按钮”的控制条件。"
+    },
+    {
+      "id": "041",
+      "original_path": "041/车辆底盘故障，请查看显示屏详细报警信息并及时排查.mp3",
+      "size_bytes": 171513,
+      "duration_seconds": 57.096,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "653e1deda292693b93c368cc826312538558f46a1ceb0d5eb46a31452cd7db02",
+      "label_from_filename": "车辆底盘故障，请查看显示屏详细报警信息并及时排查",
+      "file": "../audio/041.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:common/3",
+        "fault:common/4"
+      ],
+      "state_triggers": [
+        "COMMON_ERROR bit3",
+        "COMMON_ERROR bit4"
+      ],
+      "note": "COMMON_ERROR bit3/4 按旧MCU使用底盘汇总录音；TTS仍区分举升限位/料车连接。"
+    },
+    {
+      "id": "042",
+      "original_path": "042/车辆通讯故障，请查看显示屏详细报警信息并及时排查.mp3",
+      "size_bytes": 171513,
+      "duration_seconds": 57.096,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "33558fc0bdb65007371c908acc59be7c147a65e9d2acfe6c780514b783248c04",
+      "label_from_filename": "车辆通讯故障，请查看显示屏详细报警信息并及时排查",
+      "file": "../audio/042.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:network/ping_timeout"
+      ],
+      "state_triggers": [
+        "COMMON_WARNING / PING_TIMEOUT"
+      ],
+      "note": "网络超时使用概括性的车辆通信故障录音；TTS仍为网络连接超时。"
+    },
+    {
+      "id": "043",
+      "original_path": "043/急停功能被触发，请确认.mp3",
+      "size_bytes": 177453,
+      "duration_seconds": 59.076,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "dab3f5e997ab644cfae2416a47e5eb07b68706a783253d96698c19a7ca32e8af",
+      "label_from_filename": "急停功能被触发，请确认",
+      "file": "../audio/043.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "emergency_stop"
+      ],
+      "state_triggers": [
+        "safetyState.eStop 有效急停，或 COMMON_ERROR bit0"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "044",
+      "original_path": "044/防碰撞安全触边被触发，请确认.mp3",
+      "size_bytes": 168489,
+      "duration_seconds": 56.088,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "e07113212934e699ef61dbffae9708e7e917600d495e3bb55f032f89ac815ec9",
+      "label_from_filename": "防碰撞安全触边被触发，请确认",
+      "file": "../audio/044.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:common/1"
+      ],
+      "state_triggers": [
+        "COMMON_ERROR bit1"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "045",
+      "original_path": "045/车辆偏离路线，故障停车，请确认.mp3",
+      "size_bytes": 177453,
+      "duration_seconds": 59.076,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "a3bd62559a406c5ee9afe0f5770fcb1ccae53728d6c237fad2dabb7c66dc2451",
+      "label_from_filename": "车辆偏离路线，故障停车，请确认",
+      "file": "../audio/045.mp3",
+      "binding_status": "alternative",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "脱轨替代录音；当前 ERROR_NAVI_DERAILMENT 默认使用109。"
+    },
+    {
+      "id": "046",
+      "original_path": "046/举升执行机构动作超时,请确认.mp3",
+      "size_bytes": 165465,
+      "duration_seconds": 55.08,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "4fce05a4ebba88ae8b93d7175fef22825c93454aef9168d48d13ff4b1c06c44f",
+      "label_from_filename": "举升执行机构动作超时,请确认",
+      "file": "../audio/046.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "没有举升机构动作超时的明确 State 编码；通用动作 FAILED 不能等同超时。"
+    },
+    {
+      "id": "047",
+      "original_path": "047/牵引执行机构动作超时，请确认.mp3",
+      "size_bytes": 168489,
+      "duration_seconds": 56.088,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "89e31aeb3432cb40ffa3ecf2345d483080ce45d367c3b13af5d8e384d7c73af6",
+      "label_from_filename": "牵引执行机构动作超时，请确认",
+      "file": "../audio/047.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "没有牵引机构动作超时的明确 State 编码；不能套用 DEVICE_ERROR 的设备7。"
+    },
+    {
+      "id": "048",
+      "original_path": "048/提升执行机构动作超时，请确认.mp3",
+      "size_bytes": 165465,
+      "duration_seconds": 55.08,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "2b89dd344a57168ffd2aa4cf7135d4eb23b05bdbfa55eee2e102e68a5d7378e0",
+      "label_from_filename": "提升执行机构动作超时，请确认",
+      "file": "../audio/048.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "没有提升机构动作超时的明确 State 编码。"
+    },
+    {
+      "id": "049",
+      "original_path": "049/辊道执行机构动作超时，请确认.mp3",
+      "size_bytes": 165465,
+      "duration_seconds": 55.08,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "2e38be63244b38bb29c5482d54bb4d209816398148436bd7a53d41f8286cd46c",
+      "label_from_filename": "辊道执行机构动作超时，请确认",
+      "file": "../audio/049.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "没有辊道机构动作超时的明确 State 编码。"
+    },
+    {
+      "id": "050",
+      "original_path": "050/IPC故障，请查看显示屏详细报警信息并及时排查.mp3",
+      "size_bytes": 141489,
+      "duration_seconds": 47.088,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "872c93d286a243a9389d45f33cab5a4170f91d313730578a7b102d25a6024aff",
+      "label_from_filename": "IPC故障，请查看显示屏详细报警信息并及时排查",
+      "file": "../audio/050.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:common/2"
+      ],
+      "state_triggers": [
+        "COMMON_ERROR bit2"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "051",
+      "original_path": "051/AGV本体故障，请查看显示屏详细报警信息并及时排查.mp3",
+      "size_bytes": 150453,
+      "duration_seconds": 50.076,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "a2282b36af312ec99ef6506ca481ae8a9b6271f17b6eac3fc2b8a2555fe0818a",
+      "label_from_filename": "AGV本体故障，请查看显示屏详细报警信息并及时排查",
+      "file": "../audio/051.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:device/unknown"
+      ],
+      "state_triggers": [
+        "DEVICE_ERROR 描述无法解析，使用车体设备故障提示"
+      ],
+      "note": "用于无法解析的DEVICE_ERROR；未知但合法的设备ID继续用含ID/码值的TTS。"
+    },
+    {
+      "id": "052",
+      "original_path": "052/雷达数据异常.mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "ce71795c5cf4d47c8e97e82b2df6eab3259be97350b4590a2f06106444fdfb9b",
+      "label_from_filename": "雷达数据异常",
+      "file": "../audio/052.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "当前 PublishState 没有独立发布雷达数据异常类型；待确认 errorType/故障码。"
+    },
+    {
+      "id": "053",
+      "original_path": "053/相机数据异常.mp3",
+      "size_bytes": 18477,
+      "duration_seconds": 6.084,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "8a64048ba2a5a5db2c9b2f15efce11c7aefd7d021012bd56d30fab6d9e40add0",
+      "label_from_filename": "相机数据异常",
+      "file": "../audio/053.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "当前 PublishState 没有独立发布相机数据异常类型；待确认 errorType/故障码。"
+    },
+    {
+      "id": "054",
+      "original_path": "054/IMU数据异常.mp3",
+      "size_bytes": 18477,
+      "duration_seconds": 6.084,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "12e1a576a682e0de3e39647ebf2b7a650071bb33c6311716636654f46b228788",
+      "label_from_filename": "IMU数据异常",
+      "file": "../audio/054.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "当前 PublishState 没有独立发布 IMU 数据异常类型；设备2使用更匹配的062。"
+    },
+    {
+      "id": "055",
+      "original_path": "055/定位数据异常.mp3",
+      "size_bytes": 15453,
+      "duration_seconds": 5.076,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "6911354a948d2c12775562b2a5dbdfa81542df7beee1157957909bc8160eb5a7",
+      "label_from_filename": "定位数据异常",
+      "file": "../audio/055.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:ipc/ERROR_QR_LOC_INITED"
+      ],
+      "state_triggers": [
+        "ERROR_QR_LOC_INITED"
+      ],
+      "note": "源State把ERROR_QR_LOC_INITED放入errors时使用定位异常提示；不在这里修正上游状态机。"
+    },
+    {
+      "id": "056",
+      "original_path": "056/ros节点运行异常.mp3",
+      "size_bytes": 18477,
+      "duration_seconds": 6.084,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "dea2a4bffaf67662a2a8dc24bbb04409b2776bb169e0d3e55106cecc9c4de52a",
+      "label_from_filename": "ros节点运行异常",
+      "file": "../audio/056.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "当前 PublishState 没有独立发布 ROS 节点异常类型。"
+    },
+    {
+      "id": "057",
+      "original_path": "057/系统异常.mp3",
+      "size_bytes": 15453,
+      "duration_seconds": 5.076,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "e58c5e6e859b7a6d80dca91475a93405b118e1083b9f3da1dae713cf2e55914c",
+      "label_from_filename": "系统异常",
+      "file": "../audio/057.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "缺少“系统异常”的具体编码；不将所有未知错误笼统替换为此录音。"
+    },
+    {
+      "id": "061",
+      "original_path": "061/扩展版从板异常或掉线 .mp3",
+      "size_bytes": 24525,
+      "duration_seconds": 8.1,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "7f71994e08393ba08ffad033f73fd2472ee6703e60d85b6354168b5a39ce8eff",
+      "label_from_filename": "扩展版从板异常或掉线",
+      "file": "../audio/061.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:device/1/*"
+      ],
+      "state_triggers": [
+        "DEVICE_ERROR，设备 ID=1，任意有效原始16位故障码；精确故障码配置优先"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "062",
+      "original_path": "062/陀螺仪异常或掉线 .mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "c58bd942c870b029d8d368a386a60f45c6ae71a1f2256e94c0768a64caed27c0",
+      "label_from_filename": "陀螺仪异常或掉线",
+      "file": "../audio/062.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:device/2/*"
+      ],
+      "state_triggers": [
+        "DEVICE_ERROR，设备 ID=2，任意有效原始16位故障码；精确故障码配置优先"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "063",
+      "original_path": "063/拉绳编码器异常或掉线.mp3",
+      "size_bytes": 24525,
+      "duration_seconds": 8.1,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "a5fef5b46fb13bb10a40513093c5eb72600afdc82f001838450975a1f59db684",
+      "label_from_filename": "拉绳编码器异常或掉线",
+      "file": "../audio/063.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:device/3/*"
+      ],
+      "state_triggers": [
+        "DEVICE_ERROR，设备 ID=3，任意有效原始16位故障码；精确故障码配置优先"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "064",
+      "original_path": "064/电池异常或掉线 .mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "bbf9e501a48d2368c7de4cdaee964f022d31576f2ecee88ed76686b1a6eae6ab",
+      "label_from_filename": "电池异常或掉线",
+      "file": "../audio/064.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:device/4/*"
+      ],
+      "state_triggers": [
+        "DEVICE_ERROR，设备 ID=4，任意有效原始16位故障码；精确故障码配置优先"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "065",
+      "original_path": "065/避障器异常或掉线 .mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "f70e3fab47c66fc2dc651cfba399ec46d3e87cc586fe184c4a6376c5a4c15501",
+      "label_from_filename": "避障器异常或掉线",
+      "file": "../audio/065.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:device/5/*"
+      ],
+      "state_triggers": [
+        "DEVICE_ERROR，设备 ID=5，任意有效原始16位故障码；精确故障码配置优先"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "067",
+      "original_path": "067/67-上装动作异常或掉线.mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "e08aff845fd845d4d18512f884aa930c762fa7ad53cb79d99cad6601d935c08a",
+      "label_from_filename": "上装动作异常或掉线",
+      "file": "../audio/067.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:device/7/*"
+      ],
+      "state_triggers": [
+        "DEVICE_ERROR，设备 ID=7，任意有效原始16位故障码；精确故障码配置优先"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "068",
+      "original_path": "068/68_mcu_视觉避障异常或掉线 .mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "0044d9e99407aa5f4c0ce5e5418a148b6b0ffd51d6676fa56637d3d81daf3e6d",
+      "label_from_filename": "视觉避障异常或掉线",
+      "file": "../audio/068.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:device/8/*"
+      ],
+      "state_triggers": [
+        "DEVICE_ERROR，设备 ID=8，任意有效原始16位故障码；精确故障码配置优先"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "069",
+      "original_path": "069/69_mcu_驱动器一异常或掉线 .mp3",
+      "size_bytes": 24525,
+      "duration_seconds": 8.1,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "3664c3072f0f8074fd683c8f9c0c4df75cb7c9e42ec1f7af79e7aa4a9244061f",
+      "label_from_filename": "驱动器一异常或掉线",
+      "file": "../audio/069.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:device/9/*"
+      ],
+      "state_triggers": [
+        "DEVICE_ERROR，设备 ID=9，任意有效原始16位故障码；精确故障码配置优先"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "070",
+      "original_path": "070/70_mcu_驱动器二异常或掉线.mp3",
+      "size_bytes": 24525,
+      "duration_seconds": 8.1,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "6be50ceac39a99f5eff8459819fbd164d0c23f927c029ae22eb49830b5e879dc",
+      "label_from_filename": "驱动器二异常或掉线",
+      "file": "../audio/070.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:device/10/*"
+      ],
+      "state_triggers": [
+        "DEVICE_ERROR，设备 ID=10，任意有效原始16位故障码；精确故障码配置优先"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "071",
+      "original_path": "071/71_mcu_驱动器三异常或掉线 .mp3",
+      "size_bytes": 24525,
+      "duration_seconds": 8.1,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "fd480a2f538732d5f1ac9b8e0a4747f1f8a64856b8464b68e71743cc66c90838",
+      "label_from_filename": "驱动器三异常或掉线",
+      "file": "../audio/071.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:device/11/*"
+      ],
+      "state_triggers": [
+        "DEVICE_ERROR，设备 ID=11，任意有效原始16位故障码；精确故障码配置优先"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "072",
+      "original_path": "072/72_mcu_驱动器四异常或掉线.mp3",
+      "size_bytes": 24525,
+      "duration_seconds": 8.1,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "8aa1537789b9f66f0a1e9f5e89c74226740fdc86b4dd9a07ecdc8bf57d413554",
+      "label_from_filename": "驱动器四异常或掉线",
+      "file": "../audio/072.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:device/12/*"
+      ],
+      "state_triggers": [
+        "DEVICE_ERROR，设备 ID=12，任意有效原始16位故障码；精确故障码配置优先"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "073",
+      "original_path": "073/73_mcu_驱动器五异常或掉线.mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "f954b6f06a182c0a4984c80d233e8da13498002b8260fdb3b5e4ff2d229d9ade",
+      "label_from_filename": "驱动器五异常或掉线",
+      "file": "../audio/073.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:device/13/*"
+      ],
+      "state_triggers": [
+        "DEVICE_ERROR，设备 ID=13，任意有效原始16位故障码；精确故障码配置优先"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "074",
+      "original_path": "074/74_mcu_驱动器六异常或掉线.mp3",
+      "size_bytes": 24525,
+      "duration_seconds": 8.1,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "72449e02d5951abf32e7e427d3be5d2cee037862c375d0934a8c92496f9066c5",
+      "label_from_filename": "驱动器六异常或掉线",
+      "file": "../audio/074.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:device/14/*"
+      ],
+      "state_triggers": [
+        "DEVICE_ERROR，设备 ID=14，任意有效原始16位故障码；精确故障码配置优先"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "080",
+      "original_path": "080/80_mcu_主从通信故障.mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "ca0acc6eb9b936fa1d5f76b971e1496dfc80298c76b2a83b579a96756764aeed",
+      "label_from_filename": "主从通信故障",
+      "file": "../audio/080.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "MCU touch_err bit0；现有 State 未传递该细分字段，不是 DEVICE_ERROR 的故障码80。"
+    },
+    {
+      "id": "081",
+      "original_path": "081/81_mcu_触边通信故障.mp3",
+      "size_bytes": 18477,
+      "duration_seconds": 6.084,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "fefb59dbd736e4e6ad14fbe178d4b94a651bf94bcfcff46739f9923bb50daa70",
+      "label_from_filename": "触边通信故障",
+      "file": "../audio/081.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "MCU touch_err bit1；现有 State 未传递该细分字段，不是 DEVICE_ERROR 的故障码81。"
+    },
+    {
+      "id": "082",
+      "original_path": "082/82_mcu_车体触边连接异常.mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "8f18ad00afb1beb8a71df0c3a6804e14f2b4d1c3e609b57beb24bba2d25af249",
+      "label_from_filename": "车体触边连接异常",
+      "file": "../audio/082.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "MCU touch_err bit2；现有 State 未传递该细分字段，不是 COMMON_ERROR bit2。"
+    },
+    {
+      "id": "083",
+      "original_path": "083/83_mcu_托盘触边连接异常.mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "f2b2009e99a0a650384c9512046cc9ee1b7ada9494bfcc833557d6ac3caf20b1",
+      "label_from_filename": "托盘触边连接异常",
+      "file": "../audio/083.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "MCU touch_err bit3；现有 State 未传递该细分字段，不是 COMMON_ERROR bit3。"
+    },
+    {
+      "id": "084",
+      "original_path": "084/84_mcu_车体触边触发故障.mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "389b56ba033515a2a80d29e2f0f7362dd6730c9ff862a8bfb30a1d56269bb9f0",
+      "label_from_filename": "车体触边触发故障",
+      "file": "../audio/084.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "MCU touch_err bit4；现有 State 未传递该细分字段，不能由通用触边反推车体触边。"
+    },
+    {
+      "id": "085",
+      "original_path": "085/85_mcu_托盘触边触发故障.mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "9995682c77bef25f6f8a328894b4f2073420f2728660892843a722866a8fd09e",
+      "label_from_filename": "托盘触边触发故障",
+      "file": "../audio/085.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "MCU touch_err bit5；现有 State 未传递该细分字段，不能由通用触边反推托盘触边。"
+    },
+    {
+      "id": "100",
+      "original_path": "100/100_ipc参数异常.mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "417d3ad3131c6363746adc60421c484b3f4c49df8ba16d5439eede83d0ff8a1d",
+      "label_from_filename": "ipc参数异常",
+      "file": "../audio/100.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:common/5"
+      ],
+      "state_triggers": [
+        "COMMON_ERROR bit5"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "101",
+      "original_path": "101/101_ipc导航端口掉线.mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "f757fb36f2987ffae043c50c83be0b2a51b66ff5df178d4e8b1839a09d156959",
+      "label_from_filename": "ipc导航端口掉线",
+      "file": "../audio/101.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:warning/0"
+      ],
+      "state_triggers": [
+        "COMMON_WARNING bit0"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "102",
+      "original_path": "102/102_ipc上装端口掉线.mp3",
+      "size_bytes": 21501,
+      "duration_seconds": 7.092,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "ca1a42a3761299c6978cd59295096a49cbd31c635b0b09d4e24a73d516e3c2e8",
+      "label_from_filename": "ipc上装端口掉线",
+      "file": "../audio/102.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:warning/1"
+      ],
+      "state_triggers": [
+        "COMMON_WARNING bit1"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "103",
+      "original_path": "103/103_ipc_二维码定位模块没有初始化.mp3",
+      "size_bytes": 24525,
+      "duration_seconds": 8.1,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "ac9faa5f0575c96c4e135a6bd462c2a8c093b297b47097ed90e548d0820f3781",
+      "label_from_filename": "二维码定位模块没有初始化",
+      "file": "../audio/103.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:ipc/ERROR_QR_LOC_NOT_INIT"
+      ],
+      "state_triggers": [
+        "ERROR_QR_LOC_NOT_INIT"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "104",
+      "original_path": "104/104_ipc_二维码定位模块正在初始化.mp3",
+      "size_bytes": 24525,
+      "duration_seconds": 8.1,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "76453f22b805891ac1e6f506d22573b4148dba6a86ad9523ed61193052b4ad33",
+      "label_from_filename": "二维码定位模块正在初始化",
+      "file": "../audio/104.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:ipc/ERROR_QR_LOC_INITING"
+      ],
+      "state_triggers": [
+        "ERROR_QR_LOC_INITING"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "105",
+      "original_path": "105/105_ipc_二维码定位模块完成初始化.mp3",
+      "size_bytes": 24525,
+      "duration_seconds": 8.1,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "968308888daf56130215c1017f4c4d3d4c7ad7b14927ded01cf8610cd6caf1b1",
+      "label_from_filename": "二维码定位模块完成初始化",
+      "file": "../audio/105.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "台词为定位初始化完成；当前 ERROR_QR_LOC_INITED 被源工程发布为 FATAL 错误，不直接改成成功播报；先使用055定位异常。"
+    },
+    {
+      "id": "106",
+      "original_path": "106/106_ipc_二维码定位模块里程计误差过大.mp3",
+      "size_bytes": 27441,
+      "duration_seconds": 9.072,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "3b0f1149064c09c3538ddc6340281d5a793fb1be3116850a618eb8f5aa208732",
+      "label_from_filename": "二维码定位模块里程计误差过大",
+      "file": "../audio/106.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:ipc/ERROR_QR_LOC_ODOM_ERROR"
+      ],
+      "state_triggers": [
+        "ERROR_QR_LOC_ODOM_ERROR"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "107",
+      "original_path": "107/107_ipc_二维码定位模块二维码间距过大.mp3",
+      "size_bytes": 24525,
+      "duration_seconds": 8.1,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "d1d6596bf09641f16d07e6083b7aad19019a3d4da007b414210081ac00525090",
+      "label_from_filename": "二维码定位模块二维码间距过大",
+      "file": "../audio/107.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "台词为二维码间距过大；当前 ERROR_QR_LOC_QRCODE_LOST 仅明确丢码，不保证由间距过大引起，保留对应TTS。"
+    },
+    {
+      "id": "108",
+      "original_path": "108/108_ipc_二维码定位模块无法正常接收里程计数据.mp3",
+      "size_bytes": 30465,
+      "duration_seconds": 10.08,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "a0588b0d8e9927e65cc3fbd6bbe88b466ec3f1bbb728ce4deeb03d5ae34c937f",
+      "label_from_filename": "二维码定位模块无法正常接收里程计数据",
+      "file": "../audio/108.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:ipc/ERROR_QR_LOC_ODOM_NO_DATA"
+      ],
+      "state_triggers": [
+        "ERROR_QR_LOC_ODOM_NO_DATA"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "109",
+      "original_path": "109/109_ipc_脱轨.mp3",
+      "size_bytes": 18477,
+      "duration_seconds": 6.084,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "f89967b50e4405976c48a6f7441f41820944ff2e1bb0065026625fa883069e12",
+      "label_from_filename": "脱轨",
+      "file": "../audio/109.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:ipc/ERROR_NAVI_DERAILMENT"
+      ],
+      "state_triggers": [
+        "ERROR_NAVI_DERAILMENT"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "110",
+      "original_path": "110/110_ipc_RCS下发任务点位出现越界.mp3",
+      "size_bytes": 24525,
+      "duration_seconds": 8.1,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "420ad5286340836c186da0fee54804b949096fff90d09d27372809290ad960ab",
+      "label_from_filename": "RCS下发任务点位出现越界",
+      "file": "../audio/110.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "台词为RCS下发任务点越界；当前 ERROR_NAVI_OVER_POINT 表示车辆越过路径点，含义不一致。"
+    },
+    {
+      "id": "111",
+      "original_path": "111/111_ipc_二维码定位模块没有读到二维码数据.mp3",
+      "size_bytes": 27441,
+      "duration_seconds": 9.072,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "cddcc7ab8a138651fad66cb61c44d0e173e645e4b3e6693711720e6e699fac39",
+      "label_from_filename": "二维码定位模块没有读到二维码数据",
+      "file": "../audio/111.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:ipc/ERROR_QR_LOC_NO_DATA"
+      ],
+      "state_triggers": [
+        "ERROR_QR_LOC_NO_DATA"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "113",
+      "original_path": "113/113_ipc_二维码里程计脉冲未更新.mp3",
+      "size_bytes": 24525,
+      "duration_seconds": 8.1,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "8d625600c1244a616abfe7f5ec05346629e28d9e8ee1670da7b2ab47f92c6f8c",
+      "label_from_filename": "二维码里程计脉冲未更新",
+      "file": "../audio/113.mp3",
+      "binding_status": "active",
+      "voice_keys": [
+        "fault:ipc/ERROR_QR_LOC_ODOM_WHEEL_PULSE_NOT_UPDATE"
+      ],
+      "state_triggers": [
+        "ERROR_QR_LOC_ODOM_WHEEL_PULSE_NOT_UPDATE"
+      ],
+      "note": "已绑定现有State；文件缺失/无法解码时使用映射文案TTS。"
+    },
+    {
+      "id": "114",
+      "original_path": "114/114_ipc_二维码定位模块初始化失败无法读取到更多数据.mp3",
+      "size_bytes": 30465,
+      "duration_seconds": 10.08,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "fc729ce9632f9ee0233dc436a5787b620e2dd7f175a28222d67e5e496c0f9f5e",
+      "label_from_filename": "二维码定位模块初始化失败无法读取到更多数据",
+      "file": "../audio/114.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "台词包含初始化失败；ERROR_QR_LOC_CANNOT_READ_MORE 的现有映射只证明无法继续读取，不足以确认仅发生在初始化。"
+    },
+    {
+      "id": "115",
+      "original_path": "115/115_ipc_二维码定位模块配置参数异常.mp3",
+      "size_bytes": 27441,
+      "duration_seconds": 9.072,
+      "codec": "mp3",
+      "sample_rate": 16000,
+      "channels": 1,
+      "sha256": "682a304cc97046d4a189ff88f5d41c4ffef6cbec2d4cd5e90b38638713140472",
+      "label_from_filename": "二维码定位模块配置参数异常",
+      "file": "../audio/115.mp3",
+      "binding_status": "pending",
+      "voice_keys": [],
+      "state_triggers": [],
+      "note": "台词为配置参数异常；当前IPC同序号为 ERROR_QR_LOC_ROT_LOSS_CODE（旋转丢码），含义不一致。"
+    }
+  ]
+}

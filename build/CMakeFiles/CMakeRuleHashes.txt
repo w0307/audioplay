@@ -1,0 +1,2 @@
+# Hashes of file build rules.
+cc51e391b3ea29879ae0bb3ca50e10ff CMakeFiles/audioplay_demo_resources
