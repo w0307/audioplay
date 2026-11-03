@@ -1,0 +1,17 @@
+# generated file
+ar-lib
+compile
+libtool
+config.log
+config.status
+config.h
+stamp-h1
+
+*/.deps/
+*/.dirstamp
+
+# compiled binary
+libekho.a
+ekho
+test_ekho
+*.o

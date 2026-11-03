@@ -130,7 +130,7 @@ make -j1
 
 ```bash
 export EKHO_DATA_PATH=/opt/ekho-8.9/share/ekho-data
-export EKHO_DATA_PATH=/home/hx/audioplay_state_v3_6/third_party/ekho-8.9/ekho-data
+export EKHO_DATA_PATH=/home/hx/audioplay/third_party/ekho-8.9/ekho-data
 ```
 
 确认该目录包含有效的 `zh.dict`、`pinyin.index` 和 `pinyin.voice`。eSpeak-ng 的数据也必须安装完整；使用自定义安装目录时设置 `ESPEAK_DATA_PATH` 指向实际的 `espeak-ng-data` 目录。Ekho 上游在缺失部分 eSpeak 数据时可能退出进程，这属于第三方引擎部署前置条件。
