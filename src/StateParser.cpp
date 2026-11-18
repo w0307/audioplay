@@ -96,6 +96,7 @@ VoiceSnapshot StateParser::Parse(const AudioState& in) const {
     VoiceSnapshot state;
     state.emergency_stop = in.e_stop == "AUTOACK" || in.e_stop == "MANUAL" || in.e_stop == "REMOTE";
     state.obstacle = in.field_violation; state.charging = in.charging;
+    state.obstacle_disabled = in.obstacle_disabled; state.voice_disabled = in.voice_disabled;
     state.driving = in.driving; state.paused = in.paused;
     state.battery_valid = std::isfinite(in.battery_percent) && in.battery_percent >= 0 && in.battery_percent <= 100;
     state.battery_percent = in.battery_percent;

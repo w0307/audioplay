@@ -20,7 +20,7 @@
          state.amrVersion = version_amr_;
          // state.interactionZones = ...;
 +        const auto audio_result = AudioPlay::GetInstance().Play(
-+            agv_audio_integration::ToAudioState(state));
++            agv_audio_integration::ToAudioState(state, enable_mcu_sensor_));
 +        if (audio_result != AudioPlay::Result::Accepted &&
 +            audio_result != AudioPlay::Result::Disabled) {
 +            ROS_WARN_THROTTLE(5.0, "AudioPlay rejected state: %d", static_cast<int>(audio_result));

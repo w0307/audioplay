@@ -2,16 +2,20 @@
 
 #include "AudioState.h"
 #include <vda5050_msgs/State.h>
+#include <cstdint>
 #include <utility>
 
 // 归属 AGV 主工程，不编进 AudioPlay 库。
-// 这里只做字段复制，优先级、故障解析、去重、循环和资源选择仍在库内。
+// 这里只做字段复制和 HMI 位图拆分；播报策略和播放取消仍在库内。
 // 本头文件是接入示例，尚未在 ROS 工程中编译。
 namespace agv_audio_integration {
 
-inline AudioState ToAudioState(const vda5050_msgs::State& source)
+// disabled_functions 来自 enable_mcu_sensor_：bit0 屏蔽避障提示，bit2 屏蔽全部语音。
+inline AudioState ToAudioState(const vda5050_msgs::State& source, std::uint8_t disabled_functions = 0)
 {
     AudioState target;
+    target.obstacle_disabled = (disabled_functions & 0x01u) != 0;
+    target.voice_disabled = (disabled_functions & 0x04u) != 0;
 
     target.e_stop = source.safetyState.eStop;
     target.field_violation = source.safetyState.fieldViolation;

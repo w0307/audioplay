@@ -5,12 +5,15 @@
 主工程继续提交完整状态：
 
 ```cpp
-AudioPlay::GetInstance().Play(agv_audio_integration::ToAudioState(state));
+auto audio_state = agv_audio_integration::ToAudioState(state, enable_mcu_sensor_);
+AudioPlay::GetInstance().Play(audio_state);
 ```
 
 内部顺序为：提取 State → 查错误/场景映射 → 形成播报候选 → 比较优先级 → 查 JSON 中对应资源 → 通用引擎执行一次播放。
 
 主线程只提交状态。后面的选优、重复间隔和调用引擎仍由业务工作线程完成。
+
+ToAudioState 同时将 HMI 位图 bit0、bit2 拆成 obstacle_disabled、voice_disabled，默认 false；保留仅传 state 的旧调用。屏蔽障碍会排除障碍候选；屏蔽语音会将所有场景的 audible 置为 false，复用调度器取消当前任务。屏蔽期间仍提交快照、更新模式和告警状态；解除后按最新状态及未完成的最新模式事件恢复。
 
 ## 映射表在哪里
 
@@ -70,7 +73,7 @@ auto result = engine->Play(request, cancel);
 - 播放前不额外调用文件存在性检查；引擎直接尝试读取文件，失败后按约定回退 TTS。实际解码、取消和音频输出错误仍由引擎处理。
 - 初始化和线程/引擎边界保留异常收口，业务映射与正常的“没有录音”路径不依赖异常控制流程。
 
-外部 State 接口、JSON 结构、录音目录和独立引擎 API 不变。`Result::InvalidState` 保留数值兼容，但 3.2 不再整体拒绝状态；缺失或不可用的字段只影响对应候选。
+ROS State 消息、Play 方法签名、JSON 结构、录音目录和独立引擎 API 不变。AudioState 新增两个默认 false 的屏蔽字段，库和调用方需同步重新编译。`Result::InvalidState` 保留数值兼容，但 3.2 不再整体拒绝状态；缺失或不可用的字段只影响对应候选。
 
 
 3.3 补充：设备名称与设备专用错误码也在 AnnouncementTable.cpp 中维护。DEVICE_ERROR 原始 8/16 位数值先归一化再查表，具体映射与配置键见 DEVICE_MAPPING.md。

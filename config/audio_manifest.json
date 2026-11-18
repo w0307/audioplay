@@ -203,7 +203,7 @@
       "binding_status": "pending",
       "voice_keys": [],
       "state_triggers": [],
-      "note": "现有 AudioState 没有避障检测关闭标志；fieldViolation 仅表示障碍触发，不能替代关闭标志。"
+      "note": "obstacle_disabled仅用于屏蔽障碍提示；未约定010的播报触发规则，保持未绑定。"
     },
     {
       "id": "011",

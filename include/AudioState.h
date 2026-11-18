@@ -36,5 +36,9 @@ struct AudioState
     double omega_rad_s = 0.0;
 
     std::vector<AudioError> errors;
+
+    // 屏蔽状态随完整快照提交；语音屏蔽包含急停、故障等全部场景。
+    bool obstacle_disabled = false; // 仅禁止障碍提示，不控制实际避障传感器
+    bool voice_disabled = false;    // 取消当前播放；解除后按最新状态和未完成事件恢复
 };
 

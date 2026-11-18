@@ -170,13 +170,19 @@ sudo cmake --install build
 // TaskManager 初始化阶段
 (void)AudioPlay::GetInstance();
 
-// PublishState 中，state 所有字段构造完成后
-const auto result = AudioPlay::GetInstance().Play(
-    agv_audio_integration::ToAudioState(state));
+// PublishState 中，state 所有字段构造完成后，传入已有 HMI 屏蔽位图。
+auto audio_state = agv_audio_integration::ToAudioState(state, enable_mcu_sensor_);
+const auto result = AudioPlay::GetInstance().Play(audio_state);
 ```
 
 
 无需新增 Topic、订阅节点或 JSON 状态序列化。库内完成故障解析和播报选择。当前 PublishState 默认约 5 Hz，播报识别延迟会受这一周期限制。
+
+适配器把 HMI 位图的 bit0（0x01）转换为 `AudioState.obstacle_disabled`，bit2（0x04）转换为 `AudioState.voice_disabled`；1 表示屏蔽，其他位不参与语音策略。旧写法 `ToAudioState(state)` 仍可调用，默认两个屏蔽状态均为 false。两者随每次完整快照通过同一个 `Play(const AudioState&)` 提交，屏蔽期间也需要继续提交状态。
+
+`obstacle_disabled=true` 时障碍退出候选，取消当前障碍提示，其他场景按原优先级选择。`voice_disabled=true` 时全部语音（包括急停、故障）静音并取消当前播放，内部仍更新模式事件和低电等状态。解除后按最新状态恢复，仍有效的最新未完成模式事件可从头播放，已完成事件不重复。
+
+本次扩展了公开 `AudioState` 结构；库与主工程调用方必须一起重新编译、安装和重启，不能只替换共享库后继续运行旧二进制。ROS 消息、`Play` 方法签名、JSON 和独立播放引擎接口不变。
 
 将本包完整目录复制到 `task_manager/third_party/audioplay`。`integration/ros/CMakeLists.snippet.cmake` 已按现有工程中的 `task_manager` 库和 `task_manager_node` 可执行目标编写；链接沿用原工程的非关键字签名，避免混用 PRIVATE 与原 target_link_libraries 形式。
 
@@ -239,7 +245,7 @@ JSON 使用 UTF-8，采用库自身的语法/类型处理；只保留必要参�
 
 首次有效模式仅记录、不生成播报事件；之后仅在静止（driving=false）时发生手动与自动模式切换才生成一次提示事件。行驶中切换仅更新模式并使旧事件失效，停车后不补播。同一事件仅在整句正常播放完成后清除，并允许运动等低优先级场景继续参与选择；持续传入相同模式不再播报。高优先级抢占后，尚未完成的当前模式事件仍可重播；如果期间模式又发生变化，仅保留最新事件。旧配置 `mode_prompt_ms` 仅兼容启用/关闭语义，不再计时。
 
-仅在 operatingMode=AUTOMATIC 且 fieldViolation=true 时生成障碍候选，driving=true/false 均可播报，paused 不抑制该提示。每次完整播放后间隔 repeat_interval_ms 重播，不再累计限时或进入无声占位。急停、故障、充电仍可抢占；抢占解除且条件仍成立时恢复障碍播报。障碍解除、切入手动或输入未知模式时退出障碍场景。障碍优先于模式提示：静止切到手动时可播放手动提示；静止切到自动且仍有障碍时，自动提示事件等待障碍退出。
+仅在 operatingMode=AUTOMATIC 且 fieldViolation=true 且 obstacle_disabled=false 时生成障碍候选，driving=true/false 均可播报，paused 不抑制该提示。每次完整播放后间隔 repeat_interval_ms 重播，不再累计限时或进入无声占位。急停、故障、充电仍可抢占；抢占解除且条件仍成立时恢复障碍播报。障碍解除、切入手动、输入未知模式或屏蔽障碍时退出障碍场景；voice_disabled=true 则统一静音。障碍优先于模式提示：静止切到手动时可播放手动提示；静止切到自动且仍有未屏蔽障碍时，自动提示事件等待障碍退出。
 
 持续场景在有效且允许出声时循环。更高级场景或当前场景失效会取消旧句，待旧任务完成清理后从最新场景开头播，不补播历史句。没有 FIFO 队列。相同状态更新只更新时效。
 

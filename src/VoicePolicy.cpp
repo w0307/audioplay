@@ -69,7 +69,7 @@ VoiceDecision VoicePolicy::Evaluate(const VoiceSnapshot& s, TimePoint now) {
     const Scene candidates[] = {
         motion, mode,
         battery_low_ ? Scene::LowBattery : Scene::None,
-        s.obstacle && s.mode == OperatingMode::Automatic ? Scene::Obstacle : Scene::None,
+        s.obstacle && !s.obstacle_disabled && s.mode == OperatingMode::Automatic ? Scene::Obstacle : Scene::None,
         !stale && s.charging ? Scene::Charging : Scene::None,
         !s.faults.empty() ? Scene::Fault : Scene::None,
         s.emergency_stop ? Scene::EmergencyStop : Scene::None
@@ -83,6 +83,8 @@ VoiceDecision VoicePolicy::Evaluate(const VoiceSnapshot& s, TimePoint now) {
     if (!selected || selected->scene == motion) { translating_ = translating; sideways_ = sideways; turn_ = turn; }
     if (!selected) return VoiceDecision();
     auto decision = Make(selected->scene);
+    // 静音只控制出声，保留状态评估和未完成模式事件；调度器按 audible 变化取消当前任务。
+    decision.audible = !s.voice_disabled;
     if (selected->scene == Scene::Fault) {
         decision.key.detail = s.faults.front().stable_key;
         decision.default_text = s.faults.front().fallback_text;

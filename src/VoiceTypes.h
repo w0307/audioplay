@@ -48,6 +48,8 @@ struct VoiceSnapshot
     std::vector<Fault> faults;
     bool charging = false;
     bool obstacle = false;      // 当前版仅表示 fieldViolation
+    bool obstacle_disabled = false;
+    bool voice_disabled = false;
     bool battery_valid = false;
     double battery_percent = 0.0;
     OperatingMode mode = OperatingMode::Unknown;

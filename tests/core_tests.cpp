@@ -372,6 +372,115 @@ void ObstaclePolicyTests() {
     CHECK(automatic.key.scene == Scene::AutomaticMode && !automatic.repeat);
     prompts.OnPlaybackCompleted(automatic.key); CHECK(!At(prompts, s, 5).active);
 }
+void MaskPolicyTests() {
+    AudioState state;
+    CHECK(!state.obstacle_disabled && !state.voice_disabled);
+    state.e_stop = "NONE"; state.operating_mode = "AUTOMATIC"; state.field_violation = true; state.vx_m_s = 0.3;
+    StateParser parser; RuntimeConfig c; c.mode_prompt_enabled = false;
+    for (const bool obstacle_disabled : {false, true}) {
+        for (const bool voice_disabled : {false, true}) {
+            for (const bool driving : {false, true}) {
+                state.obstacle_disabled = obstacle_disabled; state.voice_disabled = voice_disabled; state.driving = driving;
+                const auto snapshot = parser.Parse(state);
+                CHECK(snapshot.obstacle && snapshot.obstacle_disabled == obstacle_disabled && snapshot.voice_disabled == voice_disabled);
+                VoicePolicy policy(c); const auto decision = At(policy, snapshot, 0);
+                const auto expected = !obstacle_disabled ? Scene::Obstacle : driving ? Scene::Running : Scene::None;
+                CHECK(decision.key.scene == expected);
+                CHECK(decision.audible == (expected != Scene::None && !voice_disabled));
+            }
+        }
+    }
+    const auto check_muted = [&](VoiceSnapshot snapshot, Scene expected) {
+        VoicePolicy policy(c); snapshot.obstacle_disabled = true; snapshot.voice_disabled = true;
+        const auto muted = At(policy, snapshot, 0);
+        CHECK(muted.key.scene == expected && muted.active && !muted.audible);
+        snapshot.voice_disabled = false;
+        const auto unmuted = At(policy, snapshot, 1);
+        CHECK(unmuted.key.scene == expected && unmuted.audible);
+    };
+    auto s = Running(); check_muted(s, Scene::Running);
+    s.emergency_stop = true; check_muted(s, Scene::EmergencyStop);
+    s = Running(); Fault fault; fault.stable_key = "test"; fault.fallback_text = "故障";
+    s.faults.push_back(fault); check_muted(s, Scene::Fault);
+    s = Running(); s.charging = true; check_muted(s, Scene::Charging);
+
+    c.low_battery_confirm = Milliseconds(2000); VoicePolicy battery(c);
+    s = Running(); s.voice_disabled = true; s.battery_valid = true; s.battery_percent = 19;
+    CHECK(At(battery, s, 0).key.scene == Scene::Running);
+    auto low = At(battery, s, 2000); CHECK(low.key.scene == Scene::LowBattery && !low.audible);
+    s.voice_disabled = false; low = At(battery, s, 2001); CHECK(low.key.scene == Scene::LowBattery && low.audible);
+
+    RuntimeConfig mode_config; VoicePolicy modes(mode_config); s = VoiceSnapshot(); s.voice_disabled = true;
+    s.mode = OperatingMode::Manual; CHECK(!At(modes, s, 0).active);
+    s.mode = OperatingMode::Automatic; const auto old = At(modes, s, 1);
+    CHECK(old.key.scene == Scene::AutomaticMode && !old.audible && !old.repeat);
+    s.mode = OperatingMode::Manual; const auto latest = At(modes, s, 2);
+    CHECK(latest.key.scene == Scene::ManualMode && !latest.audible && latest.key.event_id != old.key.event_id);
+    modes.OnPlaybackCompleted(old.key);
+    s.voice_disabled = false; const auto resumed = At(modes, s, 3);
+    CHECK(resumed.key.scene == Scene::ManualMode && resumed.audible && resumed.key.event_id == latest.key.event_id);
+    modes.OnPlaybackCompleted(resumed.key); CHECK(!At(modes, s, 4).active);
+}
+void MaskSchedulerTests() {
+    RuntimeConfig c; StateParser parser;
+    {
+        AudioState state; state.e_stop = "NONE"; state.operating_mode = "AUTOMATIC"; state.field_violation = true;
+        auto probe = std::make_shared<Probe>(); PlaybackScheduler scheduler(c, Backend(probe));
+        scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(1));
+        CHECK(probe->Last() == "前方有障碍物，请注意避让。");
+        state.obstacle_disabled = true; scheduler.UpdateState(parser.Parse(state)); CHECK(probe->WaitFinished(1));
+        {
+            std::unique_lock<std::mutex> lock(probe->mutex);
+            CHECK(!probe->changed.wait_for(lock, Milliseconds(100), [&] { return probe->starts.size() > 1; }));
+        }
+        state.operating_mode = "MANUAL"; scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(2));
+        CHECK(probe->Last() == "手动模式已开启。");
+        state.obstacle_disabled = false; state.voice_disabled = true; scheduler.UpdateState(parser.Parse(state));
+        CHECK(probe->WaitFinished(2));
+        state.operating_mode = "AUTOMATIC"; state.e_stop = "AUTOACK";
+        state.errors = {Error("COMMON_ERROR", "2")}; scheduler.UpdateState(parser.Parse(state));
+        {
+            std::unique_lock<std::mutex> lock(probe->mutex);
+            CHECK(!probe->changed.wait_for(lock, Milliseconds(100), [&] { return probe->starts.size() > 2; }));
+        }
+        state.voice_disabled = false; scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(3));
+        CHECK(probe->Last() == "急停已触发，请检查并复位。");
+        state.e_stop = "NONE"; scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(4));
+        CHECK(probe->Last() == "触碰保护已触发，请检查。");
+        state.errors.clear(); scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(5));
+        CHECK(probe->Last() == "前方有障碍物，请注意避让。");
+        state.obstacle_disabled = true; scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(6));
+        CHECK(probe->Last() == "自动模式已开启。");
+        probe->Finish(6); CHECK(probe->WaitFinished(6));
+        scheduler.Shutdown(); CHECK(probe->peak == 1 && probe->cancelled == 5);
+    }
+    {
+        AudioState state; state.operating_mode = "MANUAL";
+        auto probe = std::make_shared<Probe>(); PlaybackScheduler scheduler(c, Backend(probe));
+        scheduler.UpdateState(parser.Parse(state));
+        state.operating_mode = "AUTOMATIC"; scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(1));
+        state.voice_disabled = true; scheduler.UpdateState(parser.Parse(state)); CHECK(probe->WaitFinished(1));
+        state.operating_mode = "MANUAL"; scheduler.UpdateState(parser.Parse(state));
+        {
+            std::unique_lock<std::mutex> lock(probe->mutex);
+            CHECK(!probe->changed.wait_for(lock, Milliseconds(100), [&] { return probe->starts.size() > 1; }));
+        }
+        state.voice_disabled = false; scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(2));
+        CHECK(probe->Last() == "手动模式已开启。");
+        probe->Finish(2); CHECK(probe->WaitFinished(2));
+        {
+            std::unique_lock<std::mutex> lock(probe->mutex);
+            CHECK(!probe->changed.wait_for(lock, Milliseconds(100), [&] { return probe->starts.size() > 2; }));
+        }
+        state.voice_disabled = true; scheduler.UpdateState(parser.Parse(state));
+        state.voice_disabled = false; scheduler.UpdateState(parser.Parse(state));
+        {
+            std::unique_lock<std::mutex> lock(probe->mutex);
+            CHECK(!probe->changed.wait_for(lock, Milliseconds(100), [&] { return probe->starts.size() > 2; }));
+        }
+        scheduler.Shutdown(); CHECK(probe->peak == 1 && probe->cancelled == 1);
+    }
+}
 void ModePolicyTests() {
     for (const auto initial : {OperatingMode::Manual, OperatingMode::Automatic}) {
         RuntimeConfig config; VoicePolicy fresh(config); VoiceSnapshot state;
@@ -720,6 +829,8 @@ int main(int argc, char** argv) {
         RecordingMappingTests(); std::cout << "Shipped MP3 bindings/device wildcard/exact override/unbound codes/sideways passed\n";
         PolicyTests(); std::cout << "Priority/timing/hysteresis/staleness cases passed\n";
         ObstaclePolicyTests(); std::cout << "Automatic-only obstacle/continuous repeat/manual-mode release cases passed\n";
+        MaskPolicyTests(); std::cout << "Mask defaults/propagation/priority/mode retention cases passed\n";
+        MaskSchedulerTests(); std::cout << "Obstacle mask/global mute/cancellation/latest mode recovery passed\n";
         ModePolicyTests(); std::cout << "Mode events/completion/identity/disabled cases passed\n";
         ModeSchedulerTests(); std::cout << "Mode once/whole sentence/preemption/latest event/retry cases passed\n";
         SchedulerTests(); std::cout << "Preemption/dedup/repeat/concurrency/shutdown cases passed\n";

@@ -10,7 +10,7 @@
 
 依赖单向：业务层依赖通用引擎接口。引擎头文件不包含业务头文件，构建不需要业务源码或 nlohmann/json，engine 整个目录可独立交付。库内部类型分别位于 audioplay_detail 和 audio_engine 命名空间。
 
-主工程继续只调用 `AudioPlay::GetInstance().Play(ToAudioState(state))`。AudioPlay 是车辆业务入口；它和通用引擎的 `IPlaybackEngine::Play` 是两个不同层次的接口。
+主工程继续只调用 `AudioPlay::GetInstance().Play(ToAudioState(state, enable_mcu_sensor_))`。适配器把已有 HMI 位图的 bit0、bit2 拆为 AudioState 的 obstacle_disabled、voice_disabled，默认均为 false；不增加 ROS 消息字段。AudioPlay 是车辆业务入口；它和通用引擎的 `IPlaybackEngine::Play` 是两个不同层次的接口。
 
 ## 业务映射
 
@@ -43,7 +43,9 @@ JSON 也留在业务层：Config 解析 audio、policy、voices，VoiceCatalog �
 
 优先级：急停 > 故障 > 充电 > 障碍 > 低电 > 模式 > 运动；故障只选择最高一项。模式提示只播一次，等待整句完成，不使用时长窗口；同一模式的周期更新不再触发。首次有效模式仅记录、不生成播报事件；之后仅在静止（driving=false）时发生手动与自动模式切换才生成事件，行驶中切换不播报且停车后不补播。被高优先级打断的当前模式事件恢复后重播，快速切换只保留最新事件。
 
-障碍候选仅在 fieldViolation=true 且模式为 AUTOMATIC 时成立，与 driving 无关；完整播放后按既有间隔循环，不再累计限时。高优先级可抢占，障碍解除或退出自动模式时取消。旧 obstacle_limit_ms 仅兼容读取与校验。低电确认/回差和持续状态输入超时仍在 VoicePolicy 内。输入超时抑制充电和运动，不截断已经触发的模式句子。空值/不支持的模式会暂停模式候选；恢复相同有效模式不会新建事件。
+障碍候选仅在 fieldViolation=true、模式为 AUTOMATIC 且 obstacle_disabled=false 时成立，与 driving 无关；完整播放后按既有间隔循环，不再累计限时。高优先级可抢占，障碍解除、退出自动模式或屏蔽障碍时取消并释放候选。旧 obstacle_limit_ms 仅兼容读取与校验。低电确认/回差和持续状态输入超时仍在 VoicePolicy 内。输入超时抑制充电和运动，不截断已经触发的模式句子。空值/不支持的模式会暂停模式候选；恢复相同有效模式不会新建事件。
+
+voice_disabled=true 时仍正常解析和选优，但将决策 audible 置为 false；现有调度器检测到变化后取消当前任务且不下发新播放，包含急停和故障。模式事件与低电确认继续更新，取消不视作完成；解除静音后按最新状态、优先级和最新未完成模式事件恢复。屏蔽期间必须继续通过 Play 提交完整快照。
 
 ## 文件与合成
 
@@ -58,6 +60,8 @@ JSON 也留在业务层：Config 解析 audio、policy、voices，VoiceCatalog �
 根目录构建会同时生成 libaudioplay.so 和 libaudio_engine.so。使用源代码接入时，原有 add_subdirectory 和 AudioPlay::audioplay 链接写法继续适用；CMake 自动建立引擎依赖。
 
 部署共享库时必须同时部署两套库及 SONAME 链接，推荐使用 cmake --install。安装后的 libaudioplay 使用同目录的 libaudio_engine。引擎的独立编译、安装和通用调用示例见 engine/README.md。
+
+新增的两个屏蔽字段扩展了 AudioState 的二进制布局；即使 Play 签名不变，也必须将主工程调用方与库一起重新编译、安装和重启。
 
 如需替换音频后端，实现 IPlaybackEngine，并在业务组合入口 AudioPlay.cpp 中注入新实现；StateParser 和 VoicePolicy 无须修改。外部 State 接口没有增加文件、文本或停止重载。
 
