@@ -77,7 +77,7 @@ auto result = engine->Play(request, cancel);
 
 ## 3.4 一次性模式提示
 
-接收 State 时，PlaybackScheduler 在接收锁内调用 VoicePolicy::ObserveMode；只有首次有效模式或有效模式发生变化才创建新的待播事件。相同模式的周期更新不修改该事件。VoicePolicy 按既有优先级将待播事件作为 manual_mode / automatic_mode 候选，VoiceCatalog 查询同名 JSON 条目，文件和 TTS 继续共用一条引擎路径。
+接收 State 时，PlaybackScheduler 在接收锁内调用 VoicePolicy::ObserveMode；首次有效模式仅记录、不生成播报事件。模式提示启用时，只有在静止（driving=false）状态发生手动与自动模式切换才创建新的待播事件；行驶中切换仅更新模式并使旧事件失效，停车后不补播。相同模式的周期更新不修改该事件。VoicePolicy 按既有优先级将待播事件作为 manual_mode / automatic_mode 候选，VoiceCatalog 查询同名 JSON 条目，文件和 TTS 继续共用一条引擎路径。
 
 模式决策的 repeat=false，任务正常返回 Completed 后，调度器把 SceneKey 交给 VoicePolicy::OnPlaybackCompleted。只有事件编号匹配才清除待播标记，随后重新选优，因此模式句子播完不会继续占用优先级。取消和失败不清除；快速切换会替换待播事件，不累计历史队列。该逻辑全部在业务层，引擎接口和实现不包含模式信息。
 

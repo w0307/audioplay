@@ -37,7 +37,7 @@ AudioPlay::Result PlaybackScheduler::UpdateState(VoiceSnapshot snapshot) {
     snapshot.sequence = ++sequence_;
     snapshot.received_at = Clock::now();
     // 在接收锁内观察每次模式变化；只保存最新事件，不建立历史播报队列。
-    policy_.ObserveMode(snapshot.mode);
+    policy_.ObserveMode(snapshot.mode, snapshot.driving);
     latest_ = std::move(snapshot); has_state_ = true;
     changed_.notify_all();
     return AudioPlay::Result::Accepted;

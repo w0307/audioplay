@@ -285,39 +285,110 @@ void PolicyTests() {
     CHECK(At(no_confirm, s, 0).key.scene == Scene::Running); CHECK(!At(no_confirm, s, 4000, false).active);
 }
 void ModePolicyTests() {
+    for (const auto initial : {OperatingMode::Manual, OperatingMode::Automatic}) {
+        RuntimeConfig config; VoicePolicy fresh(config); VoiceSnapshot state;
+        CHECK(!At(fresh, state, 0).active);
+        state.mode = initial;
+        CHECK(!At(fresh, state, 1).active); // 首次有效模式仅记录。
+        CHECK(!At(fresh, state, 2).active);
+        state.mode = OperatingMode::Unknown;
+        CHECK(!At(fresh, state, 3).active);
+        state.mode = initial;
+        CHECK(!At(fresh, state, 4).active); // 未知后恢复相同模式也不触发。
+        state.mode = initial == OperatingMode::Manual ? OperatingMode::Automatic : OperatingMode::Manual;
+        const auto changed = At(fresh, state, 5);
+        CHECK(changed.key.scene == (initial == OperatingMode::Manual ? Scene::AutomaticMode : Scene::ManualMode));
+        CHECK(!changed.repeat);
+        fresh.OnPlaybackCompleted(changed.key);
+        CHECK(!At(fresh, state, 6).active);
+    }
     RuntimeConfig c; VoicePolicy policy(c); auto s = Running();
+    s.driving = false; s.mode = OperatingMode::Automatic;
+    CHECK(!At(policy, s, 0).active);
     s.mode = OperatingMode::Manual;
-    const auto first = At(policy, s, 0);
+    const auto first = At(policy, s, 1);
     CHECK(first.key.scene == Scene::ManualMode && !first.repeat);
     // 超过原3秒窗口且不再收到State，句子仍等待播放完成。
     CHECK(At(policy, s, 4000, false).key.scene == Scene::ManualMode);
     policy.OnPlaybackCompleted(first.key);
+    s.driving = true;
     CHECK(At(policy, s, 5000).key.scene == Scene::Running);
     s.mode = OperatingMode::Unknown; CHECK(At(policy, s, 5100).key.scene == Scene::Running);
     s.mode = OperatingMode::Manual; CHECK(At(policy, s, 5200).key.scene == Scene::Running);
 
     // 接收层观察到往返切换，即使选中场景同为手动，也必须是新的待播事件。
-    policy.ObserveMode(OperatingMode::Automatic);
-    policy.ObserveMode(OperatingMode::Manual);
+    policy.ObserveMode(OperatingMode::Automatic, false);
+    policy.ObserveMode(OperatingMode::Manual, false);
     policy.OnPlaybackCompleted(first.key);
     const auto latest = At(policy, s, 6000);
     CHECK(latest.key.scene == Scene::ManualMode && latest.key.event_id != first.key.event_id);
     s.emergency_stop = true; CHECK(At(policy, s, 6100).key.scene == Scene::EmergencyStop);
     s.emergency_stop = false; CHECK(At(policy, s, 6200).key.event_id == latest.key.event_id);
     policy.OnPlaybackCompleted(latest.key); CHECK(At(policy, s, 6300).key.scene == Scene::Running);
-    s.mode = OperatingMode::Automatic;
+    s.driving = false; s.mode = OperatingMode::Automatic;
     const auto automatic = At(policy, s, 6400);
     CHECK(automatic.key.scene == Scene::AutomaticMode && !automatic.repeat);
-    policy.OnPlaybackCompleted(automatic.key); CHECK(At(policy, s, 6500).key.scene == Scene::Running);
-    c.mode_prompt_enabled = false; VoicePolicy disabled(c); CHECK(At(disabled, s, 0).key.scene == Scene::Running);
+    policy.OnPlaybackCompleted(automatic.key); s.driving = true;
+    CHECK(At(policy, s, 6500).key.scene == Scene::Running);
+
+    VoicePolicy moving(c); auto driving = Running(); driving.mode = OperatingMode::Automatic;
+    CHECK(At(moving, driving, 0).key.scene == Scene::Running); // 首次在行驶中上报也不提示。
+    driving.driving = false; CHECK(!At(moving, driving, 1).active);
+    driving.mode = OperatingMode::Manual;
+    const auto stopped = At(moving, driving, 2);
+    CHECK(stopped.key.scene == Scene::ManualMode && !stopped.repeat);
+    driving.driving = true;
+    CHECK(At(moving, driving, 3).key.event_id == stopped.key.event_id); // 起步不截断停车时的提示。
+    moving.OnPlaybackCompleted(stopped.key);
+    CHECK(At(moving, driving, 4).key.scene == Scene::Running);
+    driving.mode = OperatingMode::Automatic;
+    CHECK(At(moving, driving, 5).key.scene == Scene::Running);
+    driving.driving = false; CHECK(!At(moving, driving, 6).active); // 行驶切换后停车不补播。
+    driving.driving = true; driving.mode = OperatingMode::Manual;
+    CHECK(At(moving, driving, 7).key.scene == Scene::Running);
+    driving.driving = false; CHECK(!At(moving, driving, 8).active);
+    driving.mode = OperatingMode::Automatic;
+    const auto pending = At(moving, driving, 9);
+    CHECK(pending.key.scene == Scene::AutomaticMode);
+    driving.driving = true; driving.mode = OperatingMode::Manual;
+    CHECK(At(moving, driving, 10).key.scene == Scene::Running); // 行驶中的新切换清除旧待播事件。
+    driving.driving = false; CHECK(!At(moving, driving, 11).active);
+    driving.mode = OperatingMode::Automatic;
+    const auto next = At(moving, driving, 12);
+    CHECK(next.key.scene == Scene::AutomaticMode && next.key.event_id > pending.key.event_id);
+    moving.OnPlaybackCompleted(pending.key);
+    CHECK(At(moving, driving, 13).key.event_id == next.key.event_id);
+    moving.OnPlaybackCompleted(next.key); CHECK(!At(moving, driving, 14).active);
+    c.mode_prompt_enabled = false; VoicePolicy disabled(c); s.driving = false;
+    CHECK(!At(disabled, s, 0).active);
+    s.mode = OperatingMode::Manual; CHECK(!At(disabled, s, 1).active);
+    s.driving = true; CHECK(At(disabled, s, 2).key.scene == Scene::Running);
 }
 void ModeSchedulerTests() {
     RuntimeConfig c; c.repeat_interval = Milliseconds(20);
     c.voices["manual_mode"].file_path = "/recordings/manual_mode.wav";
     c.voices["automatic_mode"].file_path = "/recordings/automatic_mode.wav";
-    {
-        StateParser parser; AudioState state; state.operating_mode = "AUTOMATIC";
+    for (const auto* initial : {"MANUAL", "AUTOMATIC"}) {
+        StateParser parser; AudioState state;
         auto probe = std::make_shared<Probe>(); PlaybackScheduler scheduler(c, Backend(probe));
+        scheduler.UpdateState(parser.Parse(state));
+        state.operating_mode = initial;
+        for (int i = 0; i < 100; ++i) scheduler.UpdateState(parser.Parse(state));
+        {
+            std::unique_lock<std::mutex> lock(probe->mutex);
+            CHECK(!probe->changed.wait_for(lock, Milliseconds(100), [&] { return !probe->starts.empty(); }));
+        }
+        state.operating_mode = std::string(initial) == "MANUAL" ? "AUTOMATIC" : "MANUAL";
+        scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(1));
+        CHECK(probe->Last() == (state.operating_mode == "MANUAL" ? "手动模式已开启。" : "自动模式已开启。"));
+        probe->Finish(1); CHECK(probe->WaitFinished(1));
+        scheduler.Shutdown(); CHECK(probe->peak == 1 && probe->cancelled == 0);
+    }
+    {
+        StateParser parser; AudioState state; state.operating_mode = "MANUAL";
+        auto probe = std::make_shared<Probe>(); PlaybackScheduler scheduler(c, Backend(probe));
+        scheduler.UpdateState(parser.Parse(state));
+        state.operating_mode = "AUTOMATIC";
         scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(1));
         CHECK(probe->Last() == "自动模式已开启。");
         { std::lock_guard<std::mutex> lock(probe->mutex); CHECK(probe->starts.back().file_path == "/recordings/automatic_mode.wav"); }
@@ -341,13 +412,16 @@ void ModeSchedulerTests() {
     }
     {
         auto probe = std::make_shared<Probe>(); PlaybackScheduler scheduler(c, Backend(probe));
-        auto s = Running(); s.mode = OperatingMode::Manual;
+        auto s = Running(); s.driving = false; s.mode = OperatingMode::Automatic;
+        scheduler.UpdateState(s); s.mode = OperatingMode::Manual;
         scheduler.UpdateState(s); CHECK(probe->Wait(1));
         s.emergency_stop = true; scheduler.UpdateState(s); CHECK(probe->Wait(2));
         CHECK(probe->Last() == "急停已触发，请检查并复位。");
         s.emergency_stop = false; scheduler.UpdateState(s); CHECK(probe->Wait(3));
         CHECK(probe->Last() == "手动模式已开启。");
+        s.driving = true; scheduler.UpdateState(s);
         probe->Finish(3); CHECK(probe->Wait(4)); CHECK(probe->Last() == "车辆正在运行，请注意安全。");
+        { std::lock_guard<std::mutex> lock(probe->mutex); CHECK(probe->outcomes[2] == PlaybackOutcome::Completed); }
         // 播完释放模式优先级；之后的急停解除不能再次播报已完成的模式。
         s.emergency_stop = true; scheduler.UpdateState(s); CHECK(probe->Wait(5));
         s.emergency_stop = false; scheduler.UpdateState(s); CHECK(probe->Wait(6));
@@ -356,7 +430,8 @@ void ModeSchedulerTests() {
     }
     {
         auto probe = std::make_shared<Probe>(); probe->hold_cancel = true;
-        PlaybackScheduler scheduler(c, Backend(probe)); VoiceSnapshot s; s.mode = OperatingMode::Manual;
+        PlaybackScheduler scheduler(c, Backend(probe)); VoiceSnapshot s; s.mode = OperatingMode::Automatic;
+        scheduler.UpdateState(s); s.mode = OperatingMode::Manual;
         scheduler.UpdateState(s); CHECK(probe->Wait(1));
         s.mode = OperatingMode::Automatic; scheduler.UpdateState(s);
         s.mode = OperatingMode::Manual; scheduler.UpdateState(s);
@@ -370,13 +445,45 @@ void ModeSchedulerTests() {
     }
     {
         auto probe = std::make_shared<Probe>(); probe->fail = true; c.retry_interval = Milliseconds(100);
-        PlaybackScheduler scheduler(c, Backend(probe)); VoiceSnapshot s; s.mode = OperatingMode::Manual;
+        PlaybackScheduler scheduler(c, Backend(probe)); VoiceSnapshot s; s.mode = OperatingMode::Automatic;
+        scheduler.UpdateState(s); s.mode = OperatingMode::Manual;
         scheduler.UpdateState(s); CHECK(probe->WaitFinished(1));
         { std::lock_guard<std::mutex> lock(probe->mutex); probe->fail = false; }
         CHECK(probe->Wait(2)); CHECK(probe->Last() == "手动模式已开启。");
         probe->Finish(2); CHECK(probe->WaitFinished(2));
         scheduler.UpdateState(s); std::this_thread::sleep_for(Milliseconds(150)); CHECK(probe->Count() == 2);
         scheduler.Shutdown(); CHECK(probe->peak == 1 && probe->cancelled == 0);
+    }
+    {
+        StateParser parser; AudioState state;
+        state.driving = true; state.vx_m_s = 0.3; state.operating_mode = "MANUAL";
+        auto probe = std::make_shared<Probe>(); PlaybackScheduler scheduler(c, Backend(probe));
+        scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(1));
+        CHECK(probe->Last() == "车辆正在运行，请注意安全。");
+        state.operating_mode = "AUTOMATIC"; scheduler.UpdateState(parser.Parse(state));
+        state.operating_mode = "MANUAL"; scheduler.UpdateState(parser.Parse(state));
+        state.driving = false; state.vx_m_s = 0; scheduler.UpdateState(parser.Parse(state));
+        CHECK(probe->WaitFinished(1));
+        {
+            std::unique_lock<std::mutex> lock(probe->mutex);
+            CHECK(!probe->changed.wait_for(lock, Milliseconds(100), [&] { return probe->starts.size() > 1; }));
+        }
+        state.operating_mode = "AUTOMATIC"; scheduler.UpdateState(parser.Parse(state));
+        CHECK(probe->Wait(2)); CHECK(probe->Last() == "自动模式已开启。");
+        probe->Finish(2); CHECK(probe->WaitFinished(2));
+        state.driving = true; state.vx_m_s = 0.3; state.operating_mode = "MANUAL";
+        scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(3));
+        CHECK(probe->Last() == "车辆正在运行，请注意安全。");
+        state.driving = false; state.vx_m_s = 0; scheduler.UpdateState(parser.Parse(state));
+        CHECK(probe->WaitFinished(3));
+        {
+            std::unique_lock<std::mutex> lock(probe->mutex);
+            CHECK(!probe->changed.wait_for(lock, Milliseconds(100), [&] { return probe->starts.size() > 3; }));
+        }
+        state.operating_mode = "AUTOMATIC"; scheduler.UpdateState(parser.Parse(state));
+        CHECK(probe->Wait(4)); CHECK(probe->Last() == "自动模式已开启。");
+        probe->Finish(4); CHECK(probe->WaitFinished(4));
+        scheduler.Shutdown(); CHECK(probe->peak == 1 && probe->cancelled == 2);
     }
 }
 void SchedulerTests() {

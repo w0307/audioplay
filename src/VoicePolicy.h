@@ -4,7 +4,7 @@ namespace audioplay_detail {
 class VoicePolicy final {
 public:
     explicit VoicePolicy(const RuntimeConfig& config) : config_(config) {}
-    void ObserveMode(OperatingMode mode);
+    void ObserveMode(OperatingMode mode, bool driving);
     void OnPlaybackCompleted(const SceneKey& scene);
     VoiceDecision Evaluate(const VoiceSnapshot& state, TimePoint now);
     TimePoint NextDeadline() const { return deadline_; }

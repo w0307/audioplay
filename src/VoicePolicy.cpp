@@ -4,12 +4,15 @@
 #include <cmath>
 
 namespace audioplay_detail {
-void VoicePolicy::ObserveMode(OperatingMode mode) {
+void VoicePolicy::ObserveMode(OperatingMode mode, bool driving) {
     // 只记住最后一个有效模式；缺失字段不能制造一次新的模式切换。
     if (mode == OperatingMode::Unknown || mode == mode_) return;
+    const bool had_valid_mode = mode_ != OperatingMode::Unknown;
     mode_ = mode;
     ++mode_event_;
-    mode_pending_ = config_.mode_prompt_enabled;
+    // 首次有效模式仅记录，不生成播报事件。
+    // 行驶中切换仍更新模式与事件编号，但不留待播事件，停车后也不补播。
+    mode_pending_ = config_.mode_prompt_enabled && had_valid_mode && !driving;
 }
 void VoicePolicy::OnPlaybackCompleted(const SceneKey& scene) {
     if ((scene.scene == Scene::ManualMode || scene.scene == Scene::AutomaticMode) &&
@@ -34,7 +37,7 @@ VoiceDecision VoicePolicy::Evaluate(const VoiceSnapshot& s, TimePoint now) {
     const bool stale = now >= expiry;
     if (!stale) deadline_ = expiry;
     if (!s.obstacle) obstacle_elapsed_ = Milliseconds(0);
-    ObserveMode(s.mode);
+    ObserveMode(s.mode, s.driving);
 
     // 未收到新的有效电量不能被当作确认；已确认低电不凭超时自动解除。
     if (!stale && s.battery_valid) {
