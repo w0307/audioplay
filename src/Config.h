@@ -11,7 +11,7 @@ struct RuntimeConfig {
     Milliseconds repeat_interval{1000};
     Milliseconds retry_interval{1000};
     bool mode_prompt_enabled = true;
-    Milliseconds obstacle_limit{30000};
+    Milliseconds obstacle_limit{30000}; // 仅兼容旧配置；自动模式障碍播报不再限时。
     Milliseconds low_battery_confirm{3000};
     Milliseconds input_timeout{3000};
     double low_battery_trigger = 20.0;

@@ -85,6 +85,7 @@ bool LoadJsonConfig(const std::string& path, RuntimeConfig& out, std::string& er
         // 兼容旧配置：0 仍关闭提示，正值只表示启用，不再限制句子时长。
         c.mode_prompt_enabled = p.count("mode_prompt_enabled") ?
             p.at("mode_prompt_enabled").get<bool>() : Integer(p, "mode_prompt_ms", 3000, 0, 3600000) > 0;
+        // 保留旧字段的读取与校验；不再限制自动模式障碍播报的循环时长。
         c.obstacle_limit = Milliseconds(Integer(p, "obstacle_limit_ms", 30000, 0, 3600000));
         c.low_battery_confirm = Milliseconds(Integer(p, "low_battery_confirm_ms", 3000, 0, 3600000));
         c.input_timeout = Milliseconds(Integer(p, "input_timeout_ms", 3000, 100, 3600000));

@@ -30,13 +30,10 @@ VoiceDecision VoicePolicy::Evaluate(const VoiceSnapshot& s, TimePoint now) {
     if (now < last_) now = last_;
     const auto elapsed = std::chrono::duration_cast<Milliseconds>(now - last_);
     last_ += elapsed;
-    if (obstacle_selected_) obstacle_elapsed_ = std::min(config_.obstacle_limit, obstacle_elapsed_ + elapsed);
-    obstacle_selected_ = false;
     deadline_ = TimePoint::max();
     const auto expiry = s.received_at + config_.input_timeout;
     const bool stale = now >= expiry;
     if (!stale) deadline_ = expiry;
-    if (!s.obstacle) obstacle_elapsed_ = Milliseconds(0);
     ObserveMode(s.mode, s.driving);
 
     // 未收到新的有效电量不能被当作确认；已确认低电不凭超时自动解除。
@@ -72,7 +69,7 @@ VoiceDecision VoicePolicy::Evaluate(const VoiceSnapshot& s, TimePoint now) {
     const Scene candidates[] = {
         motion, mode,
         battery_low_ ? Scene::LowBattery : Scene::None,
-        s.obstacle ? Scene::Obstacle : Scene::None,
+        s.obstacle && s.mode == OperatingMode::Automatic ? Scene::Obstacle : Scene::None,
         !stale && s.charging ? Scene::Charging : Scene::None,
         !s.faults.empty() ? Scene::Fault : Scene::None,
         s.emergency_stop ? Scene::EmergencyStop : Scene::None
@@ -89,12 +86,6 @@ VoiceDecision VoicePolicy::Evaluate(const VoiceSnapshot& s, TimePoint now) {
     if (selected->scene == Scene::Fault) {
         decision.key.detail = s.faults.front().stable_key;
         decision.default_text = s.faults.front().fallback_text;
-    } else if (selected->scene == Scene::Obstacle) {
-        decision.audible = obstacle_elapsed_ < config_.obstacle_limit;
-        if (decision.audible) {
-            obstacle_selected_ = true;
-            deadline_ = std::min(deadline_, now + config_.obstacle_limit - obstacle_elapsed_);
-        }
     } else if (selected->scene == Scene::ManualMode || selected->scene == Scene::AutomaticMode) {
         decision.repeat = false;
         decision.key.event_id = mode_event_;

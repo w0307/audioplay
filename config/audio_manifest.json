@@ -105,9 +105,9 @@
         "obstacle"
       ],
       "state_triggers": [
-        "safetyState.fieldViolation=true；累计选中30秒后静音占位"
+        "safetyState.fieldViolation=true且operatingMode=AUTOMATIC；与driving无关，持续循环"
       ],
-      "note": "录音50.076秒；默认障碍累计选中窗口30秒，可能在文件自然结束前取消。"
+      "note": "录音50.076秒；完整播放后按repeat_interval_ms循环，无累计时长限制；更高优先级可抢占，障碍解除或退出自动模式时停止。"
     },
     {
       "id": "006",

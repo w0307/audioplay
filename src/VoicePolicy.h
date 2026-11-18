@@ -14,8 +14,6 @@ private:
     bool started_ = false;
     TimePoint last_{};
     TimePoint deadline_ = TimePoint::max();
-    bool obstacle_selected_ = false;
-    Milliseconds obstacle_elapsed_{0};
     OperatingMode mode_ = OperatingMode::Unknown;
     bool mode_pending_ = false;
     std::uint64_t mode_event_ = 0;

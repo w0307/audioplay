@@ -8,7 +8,6 @@
   "policy": {
     "repeat_interval_ms": 1000,
     "mode_prompt_enabled": true,
-    "obstacle_limit_ms": 30000,
     "retry_interval_ms": 1000,
     "low_battery_trigger_percent": 20.0,
     "low_battery_recover_percent": 25.0,
