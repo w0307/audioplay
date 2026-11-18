@@ -50,6 +50,8 @@ void Apply(VoiceSnapshot& state, const ErrorRule& rule) {
     else Add(state, rule.kind, rule.order, rule.key, rule.text);
 }
 void ParseError(const AudioError& error, VoiceSnapshot& state) {
+    // WARNING 级别的 COMMON_WARNING 不生成播报候选，也不占故障优先级。
+    if (error.type == "COMMON_WARNING" && error.level == "WARNING") return;
     if (const auto* rule = FindNamedError(error.type, error.description)) { Apply(state, *rule); return; }
     if (error.type == "COMMON_ERROR" || error.type == "COMMON_WARNING") {
         std::uint32_t bits = 0;

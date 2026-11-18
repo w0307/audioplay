@@ -2,6 +2,8 @@
 
 查表顺序：StateParser 解析 `errors` → 故障类别/类别内顺序排序 → VoicePolicy 与其他场景比较 → VoiceCatalog 查 JSON → 独立引擎播放文件，源文件不可用才 TTS。
 
+级别过滤先于具名匹配和位图解析：仅当 `errorType="COMMON_WARNING"` 且 `errorLevel="WARNING"` 时，直接跳过该条目，不生成故障候选、不占用优先级，也不请求录音或 TTS。该规则包括 bit0、bit1、未定义位、`PING_TIMEOUT` 和无法解析的描述；下表的 COMMON_WARNING 映射仅适用于非 WARNING 级别（包括 FATAL、空值及其他值）。其他 errorType 沿用原有规则，同一快照中的其他故障及独立急停信号继续正常处理。
+
 优先级：急停1 > 故障2 > 充电3 > 障碍4 > 低电5 > 模式6 > 运动7。故障内部：触碰 > 限位/料车连接 > 设备 > 参数 > 导航通信 > 上装通信 > IPC > 其他；IPC继续按宿主枚举顺序。录音编号与时长均不影响优先级。
 
 ## 急停与常规/IPC错误

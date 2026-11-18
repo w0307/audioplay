@@ -109,6 +109,60 @@ void ParseTests() {
     in.errors = {Error("COMMON_ERROR", "4294967296")}; s = parser.Parse(in); CHECK(!s.faults.empty());
     in.e_stop = "NONE"; in.errors.clear(); s = parser.Parse(in); CHECK(!s.emergency_stop);
 }
+void CommonWarningLevelTests() {
+    StateParser parser; AudioState state; state.e_stop = "NONE";
+    for (const char* description : {"8", "1", "2", "3", "PING_TIMEOUT", "bad"}) {
+        state.errors = {Error("COMMON_WARNING", description, "WARNING")};
+        auto parsed = parser.Parse(state);
+        CHECK(parsed.faults.empty() && !parsed.emergency_stop);
+        for (const char* level : {"FATAL", "", "INFO"}) {
+            state.errors = {Error("COMMON_WARNING", description, level)};
+            CHECK(!parser.Parse(state).faults.empty());
+        }
+    }
+    state.errors = {Error("COMMON_WARNING", "8", "WARNING"), Error("COMMON_ERROR", "2"),
+                    Error("DEVICE_ERROR", "9 -> -1", "WARNING"), Error("UNMAPPED_ERROR", "8", "WARNING")};
+    const auto mixed = parser.Parse(state);
+    CHECK(mixed.faults.size() == 3);
+    CHECK(mixed.faults[0].stable_key == "common/1");
+    CHECK(mixed.faults[1].stable_key == "device/9/65535");
+    CHECK(mixed.faults[2].stable_key == "other/UNMAPPED_ERROR");
+    state.errors = {Error("COMMON_ERROR", "1", "WARNING")};
+    CHECK(parser.Parse(state).emergency_stop); // 过滤规则只作用于 COMMON_WARNING。
+    state.errors = {Error("COMMON_WARNING", "8", "WARNING")}; state.e_stop = "MANUAL";
+    CHECK(parser.Parse(state).emergency_stop);
+}
+void CommonWarningSchedulerTests() {
+    RuntimeConfig c;
+    c.voices["fault:warning/3"].file_path = "/recordings/warning3.mp3";
+    c.voices["fault:warning/3"].fallback_text = "测试告警";
+    StateParser parser; AudioState state; state.e_stop = "NONE"; state.operating_mode = "MANUAL";
+    state.errors = {Error("COMMON_WARNING", "8", "WARNING"), Error("COMMON_WARNING", "1", "WARNING"),
+                    Error("COMMON_WARNING", "2", "WARNING"), Error("COMMON_WARNING", "PING_TIMEOUT", "WARNING")};
+    auto probe = std::make_shared<Probe>(); PlaybackScheduler scheduler(c, Backend(probe));
+    CHECK(scheduler.UpdateState(parser.Parse(state)) == AudioPlay::Result::Accepted);
+    {
+        std::unique_lock<std::mutex> lock(probe->mutex);
+        CHECK(!probe->changed.wait_for(lock, Milliseconds(100), [&] { return !probe->starts.empty(); }));
+    }
+    state.operating_mode = "AUTOMATIC"; scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(1));
+    CHECK(probe->Last() == "自动模式已开启。");
+    state.field_violation = true; scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(2));
+    CHECK(probe->Last() == "前方有障碍物，请注意避让。");
+    state.errors.front().level = "FATAL"; scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(3));
+    CHECK(probe->Last() == "测试告警");
+    { std::lock_guard<std::mutex> lock(probe->mutex); CHECK(probe->starts.back().file_path == "/recordings/warning3.mp3"); }
+    state.errors.front().level = "WARNING"; scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(4));
+    CHECK(probe->Last() == "前方有障碍物，请注意避让。");
+    state.field_violation = false; scheduler.UpdateState(parser.Parse(state)); CHECK(probe->Wait(5));
+    CHECK(probe->Last() == "自动模式已开启。");
+    probe->Finish(5); CHECK(probe->WaitFinished(5)); scheduler.UpdateState(parser.Parse(state));
+    {
+        std::unique_lock<std::mutex> lock(probe->mutex);
+        CHECK(!probe->changed.wait_for(lock, Milliseconds(100), [&] { return probe->starts.size() > 5; }));
+    }
+    scheduler.Shutdown(); CHECK(probe->peak == 1 && probe->cancelled == 4);
+}
 void MappingPipelineTests() {
     StateParser parser;
     RuntimeConfig c; c.mode_prompt_enabled = false;
@@ -659,6 +713,8 @@ int main(int argc, char** argv) {
         }
         ConfigTests(); std::cout << "JSON/config cases passed\n";
         ParseTests(); std::cout << "State-to-announcement table cases passed\n";
+        CommonWarningLevelTests(); std::cout << "COMMON_WARNING level filtering/mixed errors/emergency preservation passed\n";
+        CommonWarningSchedulerTests(); std::cout << "COMMON_WARNING silence/priority release/level transitions passed\n";
         MappingPipelineTests(); std::cout << "State -> mapping -> priority -> JSON -> engine request passed\n";
         DeviceErrorTests(); std::cout << "Device IDs/signed 16-bit codes/offline mapping/JSON/dedup passed\n";
         RecordingMappingTests(); std::cout << "Shipped MP3 bindings/device wildcard/exact override/unbound codes/sideways passed\n";
