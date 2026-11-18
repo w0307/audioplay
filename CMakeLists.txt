@@ -19,7 +19,7 @@ if(NOT AUDIOPLAY_TEST_ONLY)
     add_library(AudioPlay::audioplay ALIAS audioplay)
     target_compile_features(audioplay PUBLIC cxx_std_11)
     set_target_properties(audioplay PROPERTIES CXX_EXTENSIONS OFF VERSION ${PROJECT_VERSION} SOVERSION 3 INSTALL_RPATH "$ORIGIN")
-    target_include_directories(audioplay PUBLIC
+    target_include_directories(audioplay BEFORE PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
         PRIVATE src third_party)

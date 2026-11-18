@@ -3,7 +3,10 @@
 set(AUDIOPLAY_BUILD_DEMO OFF CACHE BOOL "" FORCE)
 add_subdirectory(third_party/audioplay)
 target_link_libraries(task_manager AudioPlay::audioplay)
-target_include_directories(task_manager PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/third_party/audioplay/integration/ros")
+target_include_directories(task_manager BEFORE PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/third_party/audioplay/include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/third_party/audioplay/integration/ros"
+)
 add_custom_command(TARGET task_manager_node POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:task_manager_node>/config"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
